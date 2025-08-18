@@ -1,0 +1,8 @@
+## Interface: 110200
+## Title: Frontline
+## Notes: PVP Group HUD
+## Author: YourName
+## Version: 1.0
+
+Frontline.xml
+Frontline.lua
