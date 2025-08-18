@@ -6,3 +6,4 @@
 
 Frontline.xml
 Frontline.lua
+DataModel.lua
