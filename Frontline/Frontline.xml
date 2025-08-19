@@ -43,7 +43,7 @@
 
         <Frames>
             <!-- Refresh Button -->
-            <Button name="$parentRefreshButton" text="Refresh">
+            <Button name="$parentRefreshButton" text="">
                 <Size x="120" y="30"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" x="10" y="-10"/>
@@ -67,7 +67,7 @@
             </Button>
 
             <!-- Mode Button -->
-            <Button name="$parentModeButton" text="Rated Arena">
+            <Button name="$parentModeButton" text="">
                 <Size x="120" y="30"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" x="140" y="-10"/>
@@ -113,6 +113,25 @@
                     </OnClick>
                 </Scripts>
             </Button>
+
+            <ScrollFrame name="$parentScrollFrame" inherits="UIPanelScrollFrameTemplate">
+                <Size x="560" y="580"/>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" x="10" y="10"/>
+                </Anchors>
+                <ScrollChild>
+                    <Frame name="$parentScrollChild">
+                        <Size x="560" y="580"/>
+                        <Layers>
+                            <Layer level="BACKGROUND">
+                                <Texture setAllPoints="true">
+                                    <Color r="0.1" g="0.1" b="0.1" a="0.5"/>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                    </Frame>
+                </ScrollChild>
+            </ScrollFrame>
         </Frames>
         
         <Scripts>

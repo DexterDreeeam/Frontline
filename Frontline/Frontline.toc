@@ -4,6 +4,7 @@
 ## Author: YourName
 ## Version: 1.0
 
+Function.lua
+DataModel.lua
 Frontline.xml
 Frontline.lua
-DataModel.lua
