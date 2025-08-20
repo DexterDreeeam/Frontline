@@ -3,6 +3,7 @@ Frontline.refreshing = false
 Frontline.mode = "3v3"
 Frontline.resultIds = {}
 Frontline.groups = {}
+Frontline.status = {}
 
 function Frontline.Init()
     FrontlineFrameRefreshButton:SetText("Refresh")
@@ -33,23 +34,39 @@ end
 function Frontline.UpdateResult(cleanup)
     if cleanup == true then
         Frontline.resultIds = {}
+        Frontline.status = {}
     end
     Frontline.Clear()
     Frontline.ProcessResult()
+end
+
+function Frontline.UpdateStatus(id, status)
+    Frontline.status = Frontline.status or {}
+    Frontline.status[id] = status
+    for _,g in pairs(Frontline.groups) do
+        if g.id == id then
+            g.status = status
+            -- Frontline.UpdateStateIcon(g)
+        end
+    end
 end
 
 function Frontline.ProcessResult()
     local _, results = C_LFGList.GetSearchResults()
     local list = {}
     local merged = {}
-    for resultId,_ in pairs(Frontline.groups) do
-        merged[resultId] = true
+    for resultId,g in pairs(Frontline.groups) do
+        if g.rating >= 0 then
+            merged[resultId] = g.rating
+        else
+            merged[resultId] = true
+        end
     end
     for _,resultId in pairs(results) do
         merged[resultId] = true
     end
     Frontline.resultIds = merged
-    for resultId,_ in pairs(Frontline.resultIds) do
+    for resultId,val in pairs(Frontline.resultIds) do
         local result = C_LFGList.GetSearchResultInfo(resultId)
         local group = {
             id = result.searchResultID,
@@ -58,10 +75,15 @@ function Frontline.ProcessResult()
             leader = result.leaderName,
             rating = Frontline.GetLeaderRating(result),
             members = Frontline.GetMembersInfo(result),
-            friends = result.numBNetFriends,
-            hasSelf = result.hasSelf,
-            delist = result.isDelisted
+            friends = result.numBNetFriends or 0,
+            hasSelf = result.hasSelf or false,
+            delist = result.isDelisted or false,
         }
+        if type(val) == "number" then
+            group.originRating = val
+        else
+            group.originRating = group.rating
+        end
         for _,actId in pairs(result.activityIDs) do
             if actId == Frontline.ActivityId_2v2 then
                 group.type = "2v2"
@@ -71,6 +93,8 @@ function Frontline.ProcessResult()
                 group.max_mem = 3
             end
         end
+        local _,status = C_LFGList.GetApplicationInfo(resultId)
+        group.status = status
         if group.type then
             table.insert(Frontline.groups, group)
         end
@@ -79,7 +103,7 @@ function Frontline.ProcessResult()
     local row_num = 1
     for i,g in ipairs(Frontline.groups) do
         if g.type == Frontline.mode then
-            g.frame = Frontline.CreateGroupFrame(row_num, g)
+            Frontline.CreateGroupFrame(row_num, g)
             row_num = row_num + 1
         end
     end
@@ -111,7 +135,6 @@ function Frontline.SortGroups()
         elseif b == nil then
             return true
         end
-
         if a.hasSelf then
             return true
         elseif b.hasSelf then
@@ -125,15 +148,17 @@ function Frontline.SortGroups()
         end
 
         if a.type == b.type then
-            return (a.rating or 0) >= (b.rating or 0)
+            return (a.originRating or 0) > (b.originRating or 0)
         end
 
-        if a.type == Frontline.mode then
+        if a.type == b.type then
+            return false
+        elseif a.type == Frontline.mode then
             return true
         elseif b.type == Frontline.mode then
             return false
         else
-            return true
+            return false
         end
     end)
 end

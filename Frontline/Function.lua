@@ -17,6 +17,7 @@ function Frontline.GetMembersInfo(result)
     for i = 1, result.numMembers do
         local mRole,mClassEn,mClass,mSpec,mLeader = C_LFGList.GetSearchResultMemberInfo(result.searchResultID, i)
         table.insert(members, {
+            index = i,
             role = mRole,
             classEn = mClassEn,
             class = mClass,
@@ -24,6 +25,22 @@ function Frontline.GetMembersInfo(result)
             leader = mLeader,
         })
     end
+    table.sort(members, function(a, b)
+        if a == nil and b == nil then
+            return true
+        elseif a ~= nil and b == nil then
+            return true
+        elseif a == nil and b ~= nil then
+            return false
+        end
+        if a.leader and not b.leader then
+            return true
+        elseif not a.leader and b.leader then
+            return false
+        else
+            return false
+        end
+    end)
     return members
 end
 
@@ -73,6 +90,18 @@ function Frontline.SetRoleIcon(f, member, icon)
     -- end
 end
 
+function Frontline.IsGroupDisabled(group)
+    if group.delist then
+        return true
+    elseif group.status == "cancelled" then
+        return true
+    elseif group.status == "invitedeclined" then
+        return true
+    else
+        return false
+    end
+end
+
 function Frontline.CreateGroupFrame(index, group)
     local row = CreateFrame("Frame", nil, FrontlineFrameScrollFrameScrollChild)
     row:SetSize(560, 38)
@@ -83,11 +112,11 @@ function Frontline.CreateGroupFrame(index, group)
     if group.hasSelf then
         bg:SetColorTexture(0.05, 0.35, 0.05, 0.7)
     elseif group.friends > 0 then
-        bg:SetColorTexture(0.25, 0.35, 0.05, 0.7)
+        bg:SetColorTexture(0.05, 0.15, 0.35, 0.7)
     else
         bg:SetColorTexture(0.15, 0.15, 0.15, 0.7)
     end
-    if group.delist then
+    if Frontline.IsGroupDisabled(group) then
         local darkOverlay = row:CreateTexture(nil, "OVERLAY", nil, 5)
         darkOverlay:SetAllPoints()
         darkOverlay:SetColorTexture(0, 0, 0, 0.65)
@@ -98,30 +127,50 @@ function Frontline.CreateGroupFrame(index, group)
         row.highlight:SetColorTexture(1, 1, 1, 0.2)
         row:SetScript("OnMouseUp", function(self, button)
             if button == "LeftButton" then
-                print(group.leader)
-                -- C_LFGList.ApplyToGroup(group.id)
+                if group.status == nil or group.status == "none" then
+                    local role = UnitGroupRolesAssigned("player")
+                    if role == "TANK" then
+                        C_LFGList.ApplyToGroup(group.id, true, false, false)
+                    elseif role == "HEALER" then
+                        C_LFGList.ApplyToGroup(group.id, false, true, false)
+                    else
+                        C_LFGList.ApplyToGroup(group.id, false, false, true)
+                    end
+                elseif group.status == "applied" then
+                    C_LFGList.CancelApplication(group.id)
+                end
             end
+        end)
+        row:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+            GameTooltip:SetText(group.title)
+            GameTooltip:AddLine(group.leader, 1, 1, 1, true)
+            GameTooltip:AddDoubleLine(group.comment, 1, 1, 1, 0.5, 0.5, 1)
+            GameTooltip:Show()
+        end)
+        row:SetScript("OnLeave", function(self)
+            GameTooltip:Hide()
         end)
     end
 
     -- Column 1: Current Rating
     local ofst_x = 10
-    local ratingText = row:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
-    ratingText:SetPoint("LEFT", ofst_x, 0)
+    local ratingText = row:CreateFontString(nil, "ARTWORK", "NumberFontNormalLarge")
+    ratingText:SetPoint("LEFT", ofst_x - 20, 0)
     ratingText:SetText(group.rating)
     ratingText:SetJustifyH("RIGHT")
-    ratingText:SetWidth(42)
+    ratingText:SetWidth(60)
     ratingText:SetShadowColor(0, 0, 0, 1.0)
     ratingText:SetShadowOffset(4, -4)
-    ofst_x = ofst_x + 42
+    ofst_x = ofst_x + 40
     
     -- Column 2: Leader Name
     ofst_x = ofst_x + 20
     local leaderText = row:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    leaderText:SetPoint("LEFT", ofst_x, 0)
+    leaderText:SetPoint("LEFT", ofst_x - 20, 0)
     leaderText:SetText(Frontline.TruncateRealm(group.leader))
     leaderText:SetJustifyH("RIGHT")
-    leaderText:SetWidth(106)
+    leaderText:SetWidth(126)
     ratingText:SetShadowColor(0, 0, 0, 1.0)
     ratingText:SetShadowOffset(2, -2)
     local color = RAID_CLASS_COLORS[string.upper(group.members[1].classEn)]
@@ -182,7 +231,7 @@ function Frontline.CreateGroupFrame(index, group)
         exists_num = exists_num + 1
         icon_ofst = icon_ofst + 40
     end
-    ofst_x = ofst_x + 100
+    ofst_x = ofst_x + 110
 
     -- Column 4: Group Name
     ofst_x = ofst_x + 20
@@ -191,11 +240,29 @@ function Frontline.CreateGroupFrame(index, group)
     groupText:SetText(Frontline.TruncateTitle(group.title))
     groupText:SetJustifyH("LEFT")
     groupText:SetTextColor(0.7, 0.7, 0.6)
-    groupText:SetWidth(240)
+    groupText:SetWidth(200)
+    groupText:SetMaxLines(1)
     groupText:SetShadowColor(0, 0, 0, 1.0)
     groupText:SetShadowOffset(2, -2)
-    ofst_x = ofst_x + 240
-    
+    ofst_x = ofst_x + 200
+
+    -- Column 5: Group Status
+    local stateFrame = CreateFrame("Frame", nil, row)
+    stateFrame:SetSize(32, 32)
+    stateFrame:SetPoint("LEFT", ofst_x, 0)
+    stateFrame:SetFrameLevel(row:GetFrameLevel() + 2)
+    local stateIcon = stateFrame:CreateTexture(nil, "ARTWORK")
+    stateIcon:SetSize(24, 24)
+    stateIcon:SetPoint("CENTER", 0, 0)
+    stateIcon:SetAlpha(0)
+    if group.status == "applied" or
+        group.status == "invited" or
+        group.status == "invitedeclined" or
+        group.status == "cancelled" then
+        stateIcon:SetTexture("Interface\\AddOns\\Frontline\\media\\Status_"..group.status..".tga")
+        stateIcon:SetAlpha(0.7)
+    end
+
     -- local bg = row:CreateTexture(nil, "BACKGROUND")
     -- bg:SetColorTexture(0.1, 0.1, 0.1, 0.5)  -- Dark gray with 50% opacity
     -- bg:SetPoint("LEFT", groupText, -5, 0)    -- Extend slightly left
@@ -203,5 +270,5 @@ function Frontline.CreateGroupFrame(index, group)
     -- bg:SetPoint("TOP", groupText, 0, 5)      -- Extend slightly up
     -- bg:SetPoint("BOTTOM", groupText, 0, -5)  -- Extend slightly down
 
-    return row
+    group.frame = row
 end
