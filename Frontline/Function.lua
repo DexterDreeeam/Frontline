@@ -75,9 +75,18 @@ end
 
 function Frontline.CreateGroupFrame(index, group)
     local row = CreateFrame("Frame", nil, FrontlineFrameScrollFrameScrollChild)
-    row:SetSize(560, 36)
-    row:SetPoint("TOPLEFT", 0, -42 * (index-1))
+    row:SetSize(560, 38)
+    row:SetPoint("TOPLEFT", 0, -44 * (index-1))
 
+    local bg = row:CreateTexture(nil, "BACKGROUND")
+    bg:SetAllPoints()
+    if group.hasSelf then
+        bg:SetColorTexture(0.05, 0.35, 0.05, 0.7)
+    elseif group.friends > 0 then
+        bg:SetColorTexture(0.25, 0.35, 0.05, 0.7)
+    else
+        bg:SetColorTexture(0.15, 0.15, 0.15, 0.7)
+    end
     if group.delist then
         local darkOverlay = row:CreateTexture(nil, "OVERLAY", nil, 5)
         darkOverlay:SetAllPoints()
@@ -93,25 +102,18 @@ function Frontline.CreateGroupFrame(index, group)
                 -- C_LFGList.ApplyToGroup(group.id)
             end
         end)
-        local bg = row:CreateTexture(nil, "BACKGROUND")
-        bg:SetAllPoints()
-        if group.hasSelf then
-            bg:SetColorTexture(0.05, 0.35, 0.05, 0.7)
-        elseif group.friends > 0 then
-            bg:SetColorTexture(0.25, 0.35, 0.05, 0.7)
-        else
-            bg:SetColorTexture(0.15, 0.15, 0.15, 0.7)
-        end
     end
 
     -- Column 1: Current Rating
     local ofst_x = 10
-    local ratingText = row:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    local ratingText = row:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
     ratingText:SetPoint("LEFT", ofst_x, 0)
     ratingText:SetText(group.rating)
     ratingText:SetJustifyH("RIGHT")
-    ratingText:SetWidth(36)
-    ofst_x = ofst_x + 36
+    ratingText:SetWidth(42)
+    ratingText:SetShadowColor(0, 0, 0, 1.0)
+    ratingText:SetShadowOffset(4, -4)
+    ofst_x = ofst_x + 42
     
     -- Column 2: Leader Name
     ofst_x = ofst_x + 20
@@ -119,12 +121,14 @@ function Frontline.CreateGroupFrame(index, group)
     leaderText:SetPoint("LEFT", ofst_x, 0)
     leaderText:SetText(Frontline.TruncateRealm(group.leader))
     leaderText:SetJustifyH("RIGHT")
-    leaderText:SetWidth(100)
+    leaderText:SetWidth(106)
+    ratingText:SetShadowColor(0, 0, 0, 1.0)
+    ratingText:SetShadowOffset(2, -2)
     local color = RAID_CLASS_COLORS[string.upper(group.members[1].classEn)]
     if color then
         leaderText:SetTextColor(color.r, color.g, color.b)
     end
-    ofst_x = ofst_x + 100
+    ofst_x = ofst_x + 106
 
     -- Column 3: Member Class Icons
     ofst_x = ofst_x + 20
@@ -182,11 +186,14 @@ function Frontline.CreateGroupFrame(index, group)
 
     -- Column 4: Group Name
     ofst_x = ofst_x + 20
-    local groupText = row:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    local groupText = row:CreateFontString(nil, "ARTWORK", "ChatFontNormal")
     groupText:SetPoint("LEFT", ofst_x, 0)
     groupText:SetText(Frontline.TruncateTitle(group.title))
     groupText:SetJustifyH("LEFT")
+    groupText:SetTextColor(0.7, 0.7, 0.6)
     groupText:SetWidth(240)
+    groupText:SetShadowColor(0, 0, 0, 1.0)
+    groupText:SetShadowOffset(2, -2)
     ofst_x = ofst_x + 240
     
     -- local bg = row:CreateTexture(nil, "BACKGROUND")

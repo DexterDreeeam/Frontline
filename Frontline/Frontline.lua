@@ -32,7 +32,7 @@ Frontline.EventFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "LFG_LIST_SEARCH_RESULTS_RECEIVED" then
         Frontline.UpdateResult(true)
     elseif event == "LFG_LIST_SEARCH_FAILED" then
-        Frontline.Clear()
+        Frontline.RefreshFailed()
     elseif event == "LFG_LIST_SEARCH_RESULT_UPDATED" then
         Frontline.UpdateResult(false)
     end

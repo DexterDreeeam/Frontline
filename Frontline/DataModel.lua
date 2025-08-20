@@ -87,6 +87,21 @@ function Frontline.ProcessResult()
     FrontlineFrameRefreshButton:SetText("Refresh")
 end
 
+function Frontline.RefreshFailed()
+    Frontline.Clear()
+    if Frontline.failedText ~= nil then
+        Frontline.failedText:Show()
+    else
+        Frontline.failedText = FrontlineFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
+        Frontline.failedText:SetPoint("CENTER", -80, 0)
+        Frontline.failedText:SetText("Search Failed")
+        Frontline.failedText:SetJustifyH("CENTER")
+        Frontline.failedText:SetWidth(400)
+        Frontline.failedText:SetShadowColor(0, 0, 0, 1.0)
+        Frontline.failedText:SetShadowOffset(2, -2)
+    end
+end
+
 function Frontline.SortGroups()
     table.sort(Frontline.groups, function(a, b)
         if a == nil and b == nil then
@@ -125,6 +140,9 @@ end
 
 function Frontline.Clear()
     Frontline.groups = {}
+    if Frontline.failedText ~= nil then
+        Frontline.failedText:Hide()
+    end
     local scrollChild = FrontlineFrameScrollFrameScrollChild
     local children = {scrollChild:GetChildren()}
     for _, child in ipairs(children) do
