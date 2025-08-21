@@ -8,6 +8,8 @@ Frontline.EventFrame:RegisterEvent("LFG_LIST_SEARCH_RESULTS_RECEIVED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_SEARCH_FAILED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_SEARCH_RESULT_UPDATED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_APPLICATION_STATUS_UPDATED")
+Frontline.EventFrame:RegisterEvent("LFG_LIST_APPLICANT_UPDATED")
+Frontline.EventFrame:RegisterEvent("LFG_LIST_APPLICANT_LIST_UPDATED")
 Frontline.EventFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "ADDON_LOADED" then
         for _,catId in pairs(C_LFGList.GetAvailableCategories()) do
@@ -39,6 +41,10 @@ Frontline.EventFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "LFG_LIST_APPLICATION_STATUS_UPDATED" then
         -- Frontline.UpdateStatus(...)
         Frontline.UpdateResult(false)
+    elseif event == "LFG_LIST_APPLICANT_UPDATED" then
+        print(333)
+    elseif event == "LFG_LIST_APPLICANT_LIST_UPDATED" then
+        print(444)
     end
 end)
 

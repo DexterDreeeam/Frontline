@@ -31,13 +31,13 @@
                     <Color r="1" g="1" b="1" a="0.5"/>
                 </Texture>
 
-                <Texture parentKey="MyGroupDivider">
+                <!-- <Texture parentKey="MyGroupDivider">
                     <Size x="180" y="1"/>
                     <Anchors>
                         <Anchor point="BOTTOMRIGHT" x="-10" y="400"/>
                     </Anchors>
                     <Color r="1" g="1" b="1" a="0.5"/>
-                </Texture>
+                </Texture> -->
             </Layer>
         </Layers>
 
@@ -122,16 +122,143 @@
                 <ScrollChild>
                     <Frame name="$parentScrollChild">
                         <Size x="560" y="580"/>
-                        <Layers>
-                            <Layer level="BACKGROUND">
-                                <Texture setAllPoints="true">
-                                    <Color r="0.1" g="0.1" b="0.1" a="0.5"/>
-                                </Texture>
-                            </Layer>
-                        </Layers>
                     </Frame>
                 </ScrollChild>
             </ScrollFrame>
+
+            <Frame name="$parentPlayerFrame">
+                <Size x="180" y="180"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-10" y="-60"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentBackground" hidden="true">
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+                            <Color r="0.15" g="0.15" b="0.15" a="0.7"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+
+            <Frame name="$parentGroupFrame">
+                <Size x="180" y="380"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-10" y="-260"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentBackground" hidden="true">
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+                            <Color r="0.15" g="0.15" b="0.15" a="0.7"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+
+                <Frames>
+                    <!-- Create Button -->
+                    <Button name="$parentCreateButton" text="Create" hidden="false">
+                        <Size x="175" y="30"/>
+                        <Anchors>
+                            <Anchor point="TOP" x="0" y="0"/>
+                        </Anchors>
+                        <NormalFont style="GameFontNormal"/>
+                        <HighlightFont style="GameFontHighlight"/>
+                        <NormalTexture parentKey="NormalTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.2" g="0.2" b="0.2" a="1"/>
+                        </NormalTexture>
+                        <HighlightTexture parentKey="HighlightTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.5" g="0.5" b="0.5" a="0.5"/>
+                        </HighlightTexture>
+                        <PushedTexture parentKey="PushedTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.1" g="0.1" b="0.1" a="0.8"/>
+                        </PushedTexture>
+                        <Scripts>
+                            <OnClick>
+                                Frontline.Create()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <!-- List Button -->
+                    <Button name="$parentListButton" text="List" hidden="true">
+                        <Size x="175" y="30"/>
+                        <Anchors>
+                            <Anchor point="TOP" x="0" y="0"/>
+                        </Anchors>
+                        <NormalFont style="GameFontNormal"/>
+                        <HighlightFont style="GameFontHighlight"/>
+                        <NormalTexture parentKey="NormalTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.2" g="0.2" b="0.2" a="1"/>
+                        </NormalTexture>
+                        <HighlightTexture parentKey="HighlightTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.5" g="0.5" b="0.5" a="0.5"/>
+                        </HighlightTexture>
+                        <PushedTexture parentKey="PushedTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.1" g="0.1" b="0.1" a="0.8"/>
+                        </PushedTexture>
+                        <Scripts>
+                            <OnClick>
+                                Frontline.List()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <!-- Delist Button -->
+                    <Button name="$parentDelistButton" text="Delist" hidden="true">
+                        <Size x="175" y="30"/>
+                        <Anchors>
+                            <Anchor point="TOP" x="0" y="0"/>
+                        </Anchors>
+                        <NormalFont style="GameFontNormal"/>
+                        <HighlightFont style="GameFontHighlight"/>
+                        <NormalTexture parentKey="NormalTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.2" g="0.2" b="0.2" a="1"/>
+                        </NormalTexture>
+                        <HighlightTexture parentKey="HighlightTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.5" g="0.5" b="0.5" a="0.5"/>
+                        </HighlightTexture>
+                        <PushedTexture parentKey="PushedTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.1" g="0.1" b="0.1" a="0.8"/>
+                        </PushedTexture>
+                        <Scripts>
+                            <OnClick>
+                                Frontline.Delist()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <!-- Exit Group Button -->
+                    <Button name="$parentExitGroupButton" text="Exit" hidden="true">
+                        <Size x="175" y="30"/>
+                        <Anchors>
+                            <Anchor point="TOP" x="0" y="0"/>
+                        </Anchors>
+                        <NormalFont style="GameFontNormal"/>
+                        <HighlightFont style="GameFontHighlight"/>
+                        <NormalTexture parentKey="NormalTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.2" g="0.2" b="0.2" a="1"/>
+                        </NormalTexture>
+                        <HighlightTexture parentKey="HighlightTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.5" g="0.5" b="0.5" a="0.5"/>
+                        </HighlightTexture>
+                        <PushedTexture parentKey="PushedTexture" file="Interface/BUTTONS/WHITE8X8">
+                            <Color r="0.1" g="0.1" b="0.1" a="0.8"/>
+                        </PushedTexture>
+                        <Scripts>
+                            <OnClick>
+                                Frontline.ExitGroup()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                </Frames>
+            </Frame>
         </Frames>
         
         <Scripts>

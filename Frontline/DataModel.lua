@@ -4,6 +4,8 @@ Frontline.mode = "3v3"
 Frontline.resultIds = {}
 Frontline.groups = {}
 Frontline.status = {}
+Frontline.inGroup = false
+Frontline.isGroupLeader = false
 
 function Frontline.Init()
     FrontlineFrameRefreshButton:SetText("Refresh")
@@ -101,7 +103,13 @@ function Frontline.ProcessResult()
     end
     Frontline.SortGroups()
     local row_num = 1
+    Frontline.inGroup = false
+    Frontline.isGroupLeader = false
     for i,g in ipairs(Frontline.groups) do
+        if g.hasSelf then
+            Frontline.inGroup = true
+            Frontline.isGroupLeader = UnitIsGroupLeader("player") or false
+        end
         if g.type == Frontline.mode then
             Frontline.CreateGroupFrame(row_num, g)
             row_num = row_num + 1
@@ -124,43 +132,6 @@ function Frontline.RefreshFailed()
         Frontline.failedText:SetShadowColor(0, 0, 0, 1.0)
         Frontline.failedText:SetShadowOffset(2, -2)
     end
-end
-
-function Frontline.SortGroups()
-    table.sort(Frontline.groups, function(a, b)
-        if a == nil and b == nil then
-            return false
-        elseif a == nil then
-            return false
-        elseif b == nil then
-            return true
-        end
-        if a.hasSelf then
-            return true
-        elseif b.hasSelf then
-            return false
-        end
-
-        if a.friends > b.friends then
-            return true
-        elseif b.friends > a.friends then
-            return false
-        end
-
-        if a.type == b.type then
-            return (a.originRating or 0) > (b.originRating or 0)
-        end
-
-        if a.type == b.type then
-            return false
-        elseif a.type == Frontline.mode then
-            return true
-        elseif b.type == Frontline.mode then
-            return false
-        else
-            return false
-        end
-    end)
 end
 
 function Frontline.Clear()
