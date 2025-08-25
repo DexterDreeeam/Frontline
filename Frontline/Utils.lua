@@ -41,3 +41,22 @@ function Frontline.FillFrameWithColorByRole(f, role)
         border:SetColorTexture(0, 0, 0.5, 1)
     end
 end
+
+function Frontline.ButtonClickCountdown(button, dur, text, cb)
+    button:SetText(tostring(dur))
+    button:Disable()
+    local countdown = dur
+    local ticker = C_Timer.NewTicker(1, function()
+        countdown = countdown - 1
+        if countdown > 0 then
+            button:SetText(tostring(countdown))
+        else
+            ticker:Cancel()
+            button:SetText(text)
+            if cb then
+                cb()
+            end
+            button:Enable()
+        end
+    end, dur)
+end

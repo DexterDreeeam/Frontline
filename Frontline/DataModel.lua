@@ -15,13 +15,11 @@ function Frontline.Init()
 end
 
 function Frontline.SavePosition()
-    local point, relativeTo, relativePoint, x, y = FrontlineFrame:GetPoint()
-    FrontlineDb.pos = FrontlineDb.pos or {}
-    FrontlineDb.pos.point = point
-    FrontlineDb.pos.relativeTo = relativeTo
-    FrontlineDb.pos.relativePoint = relativePoint
-    FrontlineDb.pos.x = x
-    FrontlineDb.pos.y = y
+    local left = FrontlineFrame:GetLeft()
+    local top = FrontlineFrame:GetTop()
+    FrontlineDb = FrontlineDb or {}
+    FrontlineDb.left = left
+    FrontlineDb.top = top
     FrontlineDb.collapse = Frontline.collapse
 end
 
@@ -29,20 +27,12 @@ function Frontline.RestorePosition()
     FrontlineFrame:ClearAllPoints()
     Frontline.collapse = FrontlineDb.collapse
     Frontline.SwitchCollapse(false)
-    if FrontlineDb.pos == nil then
-        FrontlineDb.pos = {}
-        FrontlineDb.pos.point = "TOPLEFT"
-        -- FrontlineDb.pos.relativeTo = "UIParent"
-        FrontlineDb.pos.relativePoint = "TOPLEFT"
-        FrontlineDb.pos.x = 400
-        FrontlineDb.pos.y = -200
-    end
     FrontlineFrame:SetPoint(
-        FrontlineDb.pos.point,
-        FrontlineDb.pos.relativeTo,
-        FrontlineDb.pos.relativePoint,
-        FrontlineDb.pos.x,
-        FrontlineDb.pos.y)
+        "TOPLEFT",
+        UIParent,
+        "TOPLEFT",
+        FrontlineDb.left or 400,
+        -(FrontlineDb.top or 200))
 end
 
 function Frontline.HideAllFrames()
@@ -171,7 +161,6 @@ function Frontline.ProcessResult()
         end
     end
     Frontline.refreshing = false
-    FrontlineFrameRefreshButton:SetText("Refresh")
 end
 
 function Frontline.RefreshFailed()
@@ -213,19 +202,25 @@ function Frontline.UpdatePlayer()
 end
 
 function Frontline.Request()
+    Frontline.ButtonClickCountdown(FrontlineFrameRefreshButton, 3, "Refresh")
     if Frontline.refreshing then
         return
     end
     Frontline.Clear()
     Frontline.refreshing = true
-    FrontlineFrameRefreshButton:SetText("Loading...")
     C_LFGList.Search(Frontline.CategoryID_Arena)
 end
 
 function Frontline.CheckApplicantActivity()
-    if not Frontline.IsInActiveGroup() then
+    if Frontline.IsInActiveGroup() then
+        if Frontline.isGroupLeader() then
+            Frontline.SetGroupButton("Delist")
+        else
+            Frontline.SetGroupButton("Exit")
+        end
+    else
         Frontline.ClearApplicantFrame()
-        return
+        Frontline.ClearGroupButton()
     end
 end
 

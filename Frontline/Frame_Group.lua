@@ -1,6 +1,7 @@
 Frontline = Frontline or {}
 Frontline.TitleEditText = ""
 Frontline.CommentEditText = ""
+Frontline.GroupButton = "Create"
 
 function Frontline.SetTitle(text)
     Frontline.TitleEditText = text
@@ -8,6 +9,38 @@ end
 
 function Frontline.SetComment(text)
     Frontline.CommentEditText = text
+end
+
+function Frontline.ClearGroupButton()
+    Frontline.SetGroupButton("Create")
+end
+
+function Frontline.SetGroupButton(text)
+    if Frontline.GroupButton ~= text then
+        Frontline.ButtonClickCountdown(
+            FrontlineFrameGroupFrameGroupButton,
+            2,
+            text,
+            function()
+                Frontline.GroupButton = text
+            end)
+    end
+end
+
+function Frontline.OnGroupButton()
+    if Frontline.GroupButton == "Create" then
+        Frontline.Create()
+        Frontline.SetGroupButton("List")
+    elseif Frontline.GroupButton == "List" then
+        Frontline.List()
+        Frontline.ClearGroupButton()
+    elseif Frontline.GroupButton == "Delist" then
+        Frontline.Delist()
+        Frontline.ClearGroupButton()
+    elseif Frontline.GroupButton == "Exit" then
+        Frontline.Exit()
+        Frontline.ClearGroupButton()
+    end
 end
 
 function Frontline.Create()
@@ -66,6 +99,10 @@ end
 
 function Frontline.Delist()
     C_LFGList.RemoveListing()
+end
+
+function Frontline.Exit()
+    LeaveParty()
 end
 
 function Frontline.ClearApplicantFrame()
