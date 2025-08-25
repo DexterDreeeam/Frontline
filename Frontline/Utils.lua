@@ -17,6 +17,14 @@ function Frontline.IsLeaderInActiveGroup()
     return Frontline.IsInActiveGroup() and UnitIsGroupLeader("player")
 end
 
+function Frontline.GetColorByClassEn(classEn)
+    if classEn == nil or type(classEn) ~= "string" then
+        return { r = 1, g = 1, b = 1, a = 1 }
+    else
+        return RAID_CLASS_COLORS[string.upper(classEn)]
+    end
+end
+
 function Frontline.SavePosition()
     local left = FrontlineFrame:GetLeft()
     local top = FrontlineFrame:GetTop()

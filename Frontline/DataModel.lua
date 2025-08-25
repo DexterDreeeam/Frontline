@@ -58,8 +58,8 @@ function Frontline.SwitchCollapse(switch)
     end
     if Frontline.collapse then
         Frontline.HideAllFrames()
-        FrontlineFrame:SetSize(200, 50)
-        FrontlineFrameCollapseButton:SetText("Expand")
+        FrontlineFrame:SetSize(160, 50)
+        FrontlineFrameCollapseButton:SetText("Frontline")
     else
         FrontlineFrame:SetSize(800, 650)
         Frontline.ShowAllFrames()
@@ -195,8 +195,8 @@ function Frontline.Request()
     if Frontline.refreshing then
         return
     end
-    Frontline.UpdatePlayer()
     Frontline.refreshing = true
+    Frontline.UpdatePlayer()
     FrontlineFrameModeButton:Disable()
     FrontlineFrameGroupFrameGroupButton:Disable()
     Frontline.ButtonClickCountdown(FrontlineFrameRefreshButton, 3, "Refresh", function()

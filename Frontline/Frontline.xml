@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
     <!-- Main movable frame with black background -->
-    <Frame name="FrontlineFrame" parent="UIParent" frameStrata="MEDIUM" hidden="false" movable="true" enableMouse="true" clampedToScreen="true">
+    <Frame name="FrontlineFrame" parent="UIParent" frameStrata="HIGH" hidden="false" movable="true" enableMouse="true" clampedToScreen="true">
         <Size x="800" y="650"/>
         <Anchors>
             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="UIParent"/>
@@ -118,6 +118,11 @@
                         <Size x="560" y="580"/>
                     </Frame>
                 </ScrollChild>
+                <Scripts>
+                    <OnLoad>
+                        -- self:SetScrollStep(10)
+                    </OnLoad>
+                </Scripts>
             </ScrollFrame>
 
             <Frame name="$parentPlayerFrame">
@@ -165,9 +170,14 @@
                         </Anchors>
                         <ScrollChild>
                             <Frame name="$parentScrollChild">
-                                <Size x="560" y="580"/>
+                                <Size x="150" y="360"/>
                             </Frame>
                         </ScrollChild>
+                        <Scripts>
+                            <OnLoad>
+                                -- self:SetScrollStep(10)
+                            </OnLoad>
+                        </Scripts>
                     </ScrollFrame>
 
                 </Frames>

@@ -173,7 +173,7 @@ function Frontline.CreateGroupFrame(index, group)
     leaderText:SetWidth(126)
     ratingText:SetShadowColor(0, 0, 0, 1.0)
     ratingText:SetShadowOffset(2, -2)
-    local color = RAID_CLASS_COLORS[string.upper(group.members[1].classEn)]
+    local color = Frontline.GetColorByClassEn(group.members[1].classEn)
     if color then
         leaderText:SetTextColor(color.r, color.g, color.b)
     end

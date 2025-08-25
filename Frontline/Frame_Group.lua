@@ -173,7 +173,7 @@ function Frontline.CreateApplicantFrames()
                     local classSpecStr = m.class .. " - " .. m.specLoc
                     local activityStr = Frontline.mode .. " - " .. m.rating
                     local itemLevelStr = "PVP装备：" .. m.level
-                    local color = RAID_CLASS_COLORS[string.upper(m.classEn)]
+                    local color = Frontline.GetColorByClassEn(m.classEn)
                     GameTooltip:SetText(m.name, color.r, color.g, color.b, true)
                     GameTooltip:AddLine(classSpecStr, 0.6, 0.6, 0.6, true)
                     GameTooltip:AddLine(activityStr, 0.6, 0.6, 0.6, true)
@@ -207,7 +207,7 @@ function Frontline.CreateApplicantFrames()
         local nameText = row:CreateFontString(nil, "ARTWORK", "NumberFontNormal")
         nameText:SetPoint("BOTTOMLEFT", row, "LEFT", 40, 1)
         nameText:SetText(Frontline.TruncateRealm(mem.name))
-        local color = RAID_CLASS_COLORS[string.upper(mem.classEn)]
+        local color = Frontline.GetColorByClassEn(mem.classEn)
         nameText:SetTextColor(color.r, color.g, color.b)
         nameText:SetJustifyH("LEFT")
         nameText:SetWidth(150)
