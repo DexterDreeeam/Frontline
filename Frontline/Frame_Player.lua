@@ -1,1 +1,86 @@
 Frontline = Frontline or {}
+
+function Frontline.ClearPlayer()
+    for _,child in pairs({FrontlineFramePlayerFrame:GetChildren()}) do
+        if child then
+            child:Hide()
+            child:SetParent(nil)
+            child = nil
+        end
+    end
+end
+
+function Frontline.CreatePlayerFrame()
+    local playerFrame = CreateFrame("Frame", nil, FrontlineFramePlayerFrame)
+    playerFrame:SetAllPoints(FrontlineFramePlayerFrame)
+    playerFrame:CreateTexture(nil, "OVERLAY")
+
+    local spec_idx = GetSpecialization()
+    if spec_idx == nil then
+        return
+    end
+    local spec_id, spec_name = GetSpecializationInfo(spec_idx)
+    if spec_id == nil or spec_name == nil then
+        return
+    end
+
+    local icon = playerFrame:CreateTexture(nil, "ARTWORK")
+    local path = "Interface\\AddOns\\Frontline\\media\\Spec_"..spec_id..".tga"
+    icon:SetSize(60, 60)
+    icon:SetPoint("TOPLEFT", 0, 0)
+    icon:SetTexture(path)
+
+    local modeString = playerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    modeString:SetPoint("BOTTOMLEFT", icon, "RIGHT", 10, 6)
+    modeString:SetText(Frontline.mode or "")
+    modeString:SetJustifyH("LEFT")
+    modeString:SetShadowColor(0, 0, 0, 1.0)
+    modeString:SetShadowOffset(2, -2)
+
+    local rating = 0
+    local highest = 0
+    local weekCnt = 0
+    local weekWon = 0
+    local weekRate = "0.0"
+    local seasonCnt = 0
+    local seasonWon = 0
+    local seasonRate = "0.0"
+    if Frontline.mode == "2v2" then
+        rating, hightest, _, seasonCnt, seasonWon, weekCnt, weekWon = GetPersonalRatedInfo(1)
+    elseif Frontline.mode == "3v3" then
+        rating, hightest, _, seasonCnt, seasonWon, weekCnt, weekWon = GetPersonalRatedInfo(2)
+    end
+    if seasonWon and seasonCnt and seasonCnt >= 1 then
+        seasonRate = string.format("%.1f", 100.0 * seasonWon / seasonCnt)
+    end
+    if weekWon and weekCnt and weekCnt >= 1 then
+        weekRate = string.format("%.1f", 100.0 * weekWon / weekCnt)
+    end
+    local ratingString = playerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    ratingString:SetPoint("TOPLEFT", icon, "RIGHT", 10, -3)
+    ratingString:SetText(rating)
+    ratingString:SetJustifyH("LEFT")
+    ratingString:SetShadowColor(0, 0, 0, 1.0)
+    ratingString:SetShadowOffset(2, -2)
+
+    local hightestString = playerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    hightestString:SetPoint("TOPLEFT", playerFrame, "TOPLEFT", 10, -80)
+    hightestString:SetText("Highest: " .. hightest)
+    hightestString:SetJustifyH("LEFT")
+    hightestString:SetShadowColor(0, 0, 0, 1.0)
+    hightestString:SetShadowOffset(2, -2)
+
+    local seasonString = playerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    seasonString:SetPoint("TOPLEFT", playerFrame, "TOPLEFT", 10, -110)
+    seasonString:SetText("Season: " .. seasonWon .. " / " .. seasonCnt .. " (" .. seasonRate .. "%)")
+    seasonString:SetJustifyH("LEFT")
+    seasonString:SetShadowColor(0, 0, 0, 1.0)
+    seasonString:SetShadowOffset(2, -2)
+
+    local weekString = playerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    weekString:SetPoint("TOPLEFT", playerFrame, "TOPLEFT", 10, -140)
+    weekString:SetText("Week: " .. weekWon .. " / " .. weekCnt .. " (" .. weekRate .. "%)")
+    weekString:SetJustifyH("LEFT")
+    weekString:SetShadowColor(0, 0, 0, 1.0)
+    weekString:SetShadowOffset(2, -2)
+end

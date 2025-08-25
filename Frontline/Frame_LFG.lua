@@ -27,7 +27,7 @@ function Frontline.GetMembersInfo(result)
     end
     table.sort(members, function(a, b)
         if a == nil and b == nil then
-            return true
+            return false
         elseif a ~= nil and b == nil then
             return true
         elseif a == nil and b ~= nil then
@@ -183,7 +183,7 @@ function Frontline.CreateGroupFrame(index, group)
             end)
         end
         row:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
             GameTooltip:SetText(group.title)
             GameTooltip:AddLine(group.leader, 1, 1, 1, true)
             GameTooltip:AddLine(group.comment, 0.6, 0.6, 0.6, true)
@@ -223,21 +223,6 @@ function Frontline.CreateGroupFrame(index, group)
     -- Column 3: Member Class Icons
     ofst_x = ofst_x + 20
     local icon_ofst = 0
-    local border_fn = function(f, m)
-        local border = f:CreateTexture(nil, "BACKGROUND")
-        border:SetAllPoints()
-        border:SetTexture("Interface\\Buttons\\WHITE8X8")
-        alpha = 1.0
-        if m == nil then
-            border:SetColorTexture(0, 0, 0, 0.8)
-        elseif m.role == "DAMAGER" then
-            border:SetColorTexture(0.5, 0, 0, 1)
-        elseif m.role == "HEALER" then
-            border:SetColorTexture(0, 0.5, 0, 1)
-        else
-            border:SetColorTexture(0, 0, 0.5, 1)
-        end
-    end
     local exists_num = 0
     for i, member in ipairs(group.members) do
         local iconFrame = CreateFrame("Frame", nil, row)
@@ -247,7 +232,7 @@ function Frontline.CreateGroupFrame(index, group)
         if group.delist then
             iconFrame:SetAlpha(0.7)
         end
-        border_fn(iconFrame, member)
+        Frontline.FillFrameWithColorByRole(iconFrame, member.role)
 
         local specId = Frontline.GetSpecIdFromLocalizedName(member)
         local icon = iconFrame:CreateTexture(nil, "ARTWORK")
@@ -268,7 +253,7 @@ function Frontline.CreateGroupFrame(index, group)
         local iconFrame = CreateFrame("Frame", nil, row)
         iconFrame:SetSize(28, 28)
         iconFrame:SetPoint("LEFT", ofst_x + icon_ofst, 0)
-        border_fn(iconFrame, nil)
+        Frontline.FillFrameWithColorByRole(iconFrame, nil)
         exists_num = exists_num + 1
         icon_ofst = icon_ofst + 40
     end
@@ -303,13 +288,6 @@ function Frontline.CreateGroupFrame(index, group)
         stateIcon:SetTexture("Interface\\AddOns\\Frontline\\media\\Status_"..group.status..".tga")
         stateIcon:SetAlpha(0.7)
     end
-
-    -- local bg = row:CreateTexture(nil, "BACKGROUND")
-    -- bg:SetColorTexture(0.1, 0.1, 0.1, 0.5)  -- Dark gray with 50% opacity
-    -- bg:SetPoint("LEFT", groupText, -5, 0)    -- Extend slightly left
-    -- bg:SetPoint("RIGHT", groupText, 5, 0)    -- Extend slightly right
-    -- bg:SetPoint("TOP", groupText, 0, 5)      -- Extend slightly up
-    -- bg:SetPoint("BOTTOM", groupText, 0, -5)  -- Extend slightly down
 
     group.frame = row
 end

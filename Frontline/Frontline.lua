@@ -7,11 +7,14 @@ Frontline.EventFrame:RegisterEvent("ADDON_LOADED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_SEARCH_RESULTS_RECEIVED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_SEARCH_FAILED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_SEARCH_RESULT_UPDATED")
+Frontline.EventFrame:RegisterEvent("LFG_LIST_ACTIVE_ENTRY_UPDATE")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_APPLICATION_STATUS_UPDATED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_APPLICANT_UPDATED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_APPLICANT_LIST_UPDATED")
 Frontline.EventFrame:SetScript("OnEvent", function(self, event, ...)
+    -- print("Frontline - " .. event)
     if event == "ADDON_LOADED" then
+        FrontlineDb = FrontlineDb or {}
         for _,catId in pairs(C_LFGList.GetAvailableCategories()) do
             if catId then
                 local cat = C_LFGList.GetLfgCategoryInfo(catId)
@@ -32,6 +35,11 @@ Frontline.EventFrame:SetScript("OnEvent", function(self, event, ...)
             end
         end
         Frontline.Init()
+        Frontline.RestorePosition()
+        if FrontlineFrame:IsShown() then
+            Frontline.UpdatePlayer()
+            Frontline.Request()
+        end
     elseif event == "LFG_LIST_SEARCH_RESULTS_RECEIVED" then
         Frontline.UpdateResult(true)
     elseif event == "LFG_LIST_SEARCH_FAILED" then
@@ -42,13 +50,21 @@ Frontline.EventFrame:SetScript("OnEvent", function(self, event, ...)
         -- Frontline.UpdateStatus(...)
         Frontline.UpdateResult(false)
     elseif event == "LFG_LIST_APPLICANT_UPDATED" then
-        print(333)
+        Frontline.UpdateApplicant(...)
     elseif event == "LFG_LIST_APPLICANT_LIST_UPDATED" then
-        print(444)
+        -- Frontline.UpdateApplicant(...)
+    elseif event == "LFG_LIST_ACTIVE_ENTRY_UPDATE" then
+        Frontline.CheckApplicantActivity()
     end
 end)
 
 SLASH_FRONTLINE1 = "/fl"
 SlashCmdList["FRONTLINE"] = function()
-    FrontlineFrame:SetShown(not FrontlineFrame:IsShown())
+    if FrontlineFrame:IsShown() then
+        FrontlineFrame:Hide()
+    else
+        FrontlineFrame:Show()
+        Frontline.UpdatePlayer()
+        Frontline.Request()
+    end
 end

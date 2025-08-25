@@ -3,7 +3,7 @@
     <Frame name="FrontlineFrame" parent="UIParent" frameStrata="MEDIUM" hidden="false" movable="true" enableMouse="true">
         <Size x="800" y="650"/>
         <Anchors>
-            <Anchor point="CENTER"/>
+            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="UIParent"/>
         </Anchors>
 
         <!-- Background -->
@@ -30,20 +30,12 @@
                     </Anchors>
                     <Color r="1" g="1" b="1" a="0.5"/>
                 </Texture>
-
-                <!-- <Texture parentKey="MyGroupDivider">
-                    <Size x="180" y="1"/>
-                    <Anchors>
-                        <Anchor point="BOTTOMRIGHT" x="-10" y="400"/>
-                    </Anchors>
-                    <Color r="1" g="1" b="1" a="0.5"/>
-                </Texture> -->
             </Layer>
         </Layers>
 
         <Frames>
-            <!-- Refresh Button -->
-            <Button name="$parentRefreshButton" text="">
+            <!-- Collapse Button -->
+            <Button name="$parentCollapseButton" text="Collapse">
                 <Size x="120" y="30"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" x="10" y="-10"/>
@@ -61,38 +53,14 @@
                 </PushedTexture>
                 <Scripts>
                     <OnClick>
-                        Frontline.Request()
+                        Frontline.SwitchCollapse(true)
                     </OnClick>
                 </Scripts>
             </Button>
 
-            <!-- Mode Button -->
-            <Button name="$parentModeButton" text="">
+            <!-- Refresh Button -->
+            <Button name="$parentRefreshButton" text="">
                 <Size x="120" y="30"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" x="140" y="-10"/>
-                </Anchors>
-                <NormalFont style="GameFontNormal"/>
-                <HighlightFont style="GameFontHighlight"/>
-                <NormalTexture parentKey="NormalTexture" file="Interface/BUTTONS/WHITE8X8">
-                    <Color r="0.2" g="0.2" b="0.2" a="1"/>
-                </NormalTexture>
-                <HighlightTexture parentKey="HighlightTexture" file="Interface/BUTTONS/WHITE8X8">
-                    <Color r="0.5" g="0.5" b="0.5" a="0.5"/>
-                </HighlightTexture>
-                <PushedTexture parentKey="PushedTexture" file="Interface/BUTTONS/WHITE8X8">
-                    <Color r="0.1" g="0.1" b="0.1" a="0.8"/>
-                </PushedTexture>
-                <Scripts>
-                    <OnClick>
-                        Frontline.SwitchMode()
-                    </OnClick>
-                </Scripts>
-            </Button>
-
-            <!-- Close Button -->
-            <Button name="$parentCloseButton" text="Close">
-                <Size x="60" y="30"/>
                 <Anchors>
                     <Anchor point="TOPRIGHT" x="-10" y="-10"/>
                 </Anchors>
@@ -109,7 +77,34 @@
                 </PushedTexture>
                 <Scripts>
                     <OnClick>
-                        self:GetParent():Hide()
+                        Frontline.UpdatePlayer()
+                        Frontline.Request()
+                    </OnClick>
+                </Scripts>
+            </Button>
+
+            <!-- Mode Button -->
+            <Button name="$parentModeButton" text="">
+                <Size x="120" y="30"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-140" y="-10"/>
+                </Anchors>
+                <NormalFont style="GameFontNormal"/>
+                <HighlightFont style="GameFontHighlight"/>
+                <NormalTexture parentKey="NormalTexture" file="Interface/BUTTONS/WHITE8X8">
+                    <Color r="0.2" g="0.2" b="0.2" a="1"/>
+                </NormalTexture>
+                <HighlightTexture parentKey="HighlightTexture" file="Interface/BUTTONS/WHITE8X8">
+                    <Color r="0.5" g="0.5" b="0.5" a="0.5"/>
+                </HighlightTexture>
+                <PushedTexture parentKey="PushedTexture" file="Interface/BUTTONS/WHITE8X8">
+                    <Color r="0.1" g="0.1" b="0.1" a="0.8"/>
+                </PushedTexture>
+                <Scripts>
+                    <OnClick>
+                        Frontline.SwitchMode()
+                        Frontline.UpdatePlayer()
+                        Frontline.Request()
                     </OnClick>
                 </Scripts>
             </Button>
@@ -131,35 +126,13 @@
                 <Anchors>
                     <Anchor point="TOPRIGHT" x="-10" y="-60"/>
                 </Anchors>
-                <Layers>
-                    <Layer level="BACKGROUND">
-                        <Texture name="$parentBackground" hidden="true">
-                            <Anchors>
-                                <Anchor point="TOPLEFT"/>
-                                <Anchor point="BOTTOMRIGHT"/>
-                            </Anchors>
-                            <Color r="0.15" g="0.15" b="0.15" a="0.7"/>
-                        </Texture>
-                    </Layer>
-                </Layers>
             </Frame>
 
             <Frame name="$parentGroupFrame">
-                <Size x="180" y="380"/>
+                <Size x="180" y="400"/>
                 <Anchors>
-                    <Anchor point="TOPRIGHT" x="-10" y="-260"/>
+                    <Anchor point="TOPRIGHT" x="-10" y="-240"/>
                 </Anchors>
-                <Layers>
-                    <Layer level="BACKGROUND">
-                        <Texture name="$parentBackground" hidden="true">
-                            <Anchors>
-                                <Anchor point="TOPLEFT"/>
-                                <Anchor point="BOTTOMRIGHT"/>
-                            </Anchors>
-                            <Color r="0.15" g="0.15" b="0.15" a="0.7"/>
-                        </Texture>
-                    </Layer>
-                </Layers>
 
                 <Frames>
                     <!-- Create Button -->
@@ -257,6 +230,19 @@
                             </OnClick>
                         </Scripts>
                     </Button>
+
+                    <ScrollFrame name="$parentScrollFrame" inherits="UIPanelScrollFrameTemplate">
+                        <Size x="150" y="360"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="4" y="-40"/>
+                        </Anchors>
+                        <ScrollChild>
+                            <Frame name="$parentScrollChild">
+                                <Size x="560" y="580"/>
+                            </Frame>
+                        </ScrollChild>
+                    </ScrollFrame>
+
                 </Frames>
             </Frame>
         </Frames>
@@ -270,6 +256,9 @@
             </OnDragStart>
             <OnDragStop>
                 self:StopMovingOrSizing()
+                Frontline.SavePosition()
+                <!-- FrontlineFrame:ClearAllPoints()
+                FrontlineFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT") -->
             </OnDragStop>
         </Scripts>
     </Frame>

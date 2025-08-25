@@ -1,4 +1,5 @@
 Frontline = Frontline or {}
+Frontline.collapse = false
 Frontline.refreshing = false
 Frontline.mode = "3v3"
 Frontline.resultIds = {}
@@ -6,30 +7,84 @@ Frontline.groups = {}
 Frontline.status = {}
 Frontline.inGroup = false
 Frontline.isGroupLeader = false
+Frontline.applicants = {}
 
 function Frontline.Init()
     FrontlineFrameRefreshButton:SetText("Refresh")
     FrontlineFrameModeButton:SetText(Frontline.mode)
 end
 
-function Frontline.SwitchMode()
-    if Frontline.mode == "3v3" then
-        Frontline.mode = "2v2"
-    elseif Frontline.mode == "2v2" then
-        Frontline.mode = "3v3"
-    end
-    FrontlineFrameModeButton:SetText(Frontline.mode)
+function Frontline.SavePosition()
+    local point, relativeTo, relativePoint, x, y = FrontlineFrame:GetPoint()
+    FrontlineDb.pos = FrontlineDb.pos or {}
+    FrontlineDb.pos.point = point
+    FrontlineDb.pos.relativeTo = relativeTo
+    FrontlineDb.pos.relativePoint = relativePoint
+    FrontlineDb.pos.x = x
+    FrontlineDb.pos.y = y
+    FrontlineDb.collapse = Frontline.collapse
 end
 
-function Frontline.UpdateGroup(result)
-    local index = -1
-    for _,g in ipairs(Frontline.groups) do
-        if g.id == result.searchResultID then
-            index = g.index
+function Frontline.RestorePosition()
+    FrontlineFrame:ClearAllPoints()
+    Frontline.collapse = FrontlineDb.collapse
+    Frontline.SwitchCollapse(false)
+    if FrontlineDb.pos == nil then
+        FrontlineDb.pos = {}
+        FrontlineDb.pos.point = "TOPLEFT"
+        -- FrontlineDb.pos.relativeTo = "UIParent"
+        FrontlineDb.pos.relativePoint = "TOPLEFT"
+        FrontlineDb.pos.x = 400
+        FrontlineDb.pos.y = -200
+    end
+    FrontlineFrame:SetPoint(
+        FrontlineDb.pos.point,
+        FrontlineDb.pos.relativeTo,
+        FrontlineDb.pos.relativePoint,
+        FrontlineDb.pos.x,
+        FrontlineDb.pos.y)
+end
+
+function Frontline.HideAllFrames()
+    for i = 1, FrontlineFrame:GetNumRegions() do
+        local region = select(i, FrontlineFrame:GetRegions())
+        if region then
+            region:Hide()
         end
     end
-    if index == -1 then
-        
+    for _, child in ipairs({FrontlineFrame:GetChildren()}) do
+        child:Hide()
+    end
+    FrontlineFrame.Background:Show()
+    FrontlineFrameCollapseButton:Show()
+    FrontlineDb.collapse = Frontline.collapse
+end
+
+function Frontline.ShowAllFrames()
+    for i = 1, FrontlineFrame:GetNumRegions() do
+        local region = select(i, FrontlineFrame:GetRegions())
+        if region then
+            region:Show()
+        end
+    end
+    for _, child in ipairs({FrontlineFrame:GetChildren()}) do
+        child:Show()
+    end
+    FrontlineDb.collapse = Frontline.collapsea 
+end
+
+function Frontline.SwitchCollapse(switch)
+    if switch == true then
+        Frontline.collapse = not Frontline.collapse
+    end
+    if Frontline.collapse then
+        Frontline.HideAllFrames()
+        FrontlineFrame:SetSize(200, 50)
+        FrontlineFrameCollapseButton:SetText("Expand")
+    else
+        FrontlineFrame:SetSize(800, 650)
+        Frontline.ShowAllFrames()
+        FrontlineFrameCollapseButton:SetText("Collapse")
     end
 end
 
@@ -139,17 +194,22 @@ function Frontline.Clear()
     if Frontline.failedText ~= nil then
         Frontline.failedText:Hide()
     end
-    local scrollChild = FrontlineFrameScrollFrameScrollChild
-    local children = {scrollChild:GetChildren()}
+    local children = {FrontlineFrameScrollFrameScrollChild:GetChildren()}
     for _, child in ipairs(children) do
-        child:ClearAllPoints()
-        child:SetParent(nil)
-        child:Hide()
+        if child then
+            child:ClearAllPoints()
+            child:SetParent(nil)
+            child:Hide()
+        end
     end
     FrontlineFrameScrollFrame:SetVerticalScroll(0)
-    scrollChild:SetHeight(1)
-    Frontline.refreshing = false
     FrontlineFrameRefreshButton:SetText("Refresh")
+    Frontline.refreshing = false
+end
+
+function Frontline.UpdatePlayer()
+    Frontline.ClearPlayer()
+    Frontline.CreatePlayerFrame()
 end
 
 function Frontline.Request()
@@ -160,4 +220,51 @@ function Frontline.Request()
     Frontline.refreshing = true
     FrontlineFrameRefreshButton:SetText("Loading...")
     C_LFGList.Search(Frontline.CategoryID_Arena)
+end
+
+function Frontline.CheckApplicantActivity()
+    if not Frontline.IsInActiveGroup() then
+        Frontline.ClearApplicantFrame()
+        return
+    end
+end
+
+function Frontline.UpdateApplicant(applicantId)
+    local applicantData = C_LFGList.GetApplicantInfo(applicantId)
+    local cur_appl = {
+        id = applicantId,
+        status = applicantData.applicationStatus,
+        comment = applicantData.comment,
+    }
+    for i = 1, applicantData.numMembers do
+        local name,classEn,class,_,_,_,_,_,_,role,_,_,level,_,_,specId,_ = C_LFGList.GetApplicantMemberInfo(applicantId, i)
+        local _,specLoc = GetSpecializationInfoByID(specId)
+        local pvp = C_LFGList.GetApplicantPvpRatingInfoForListing(applicantId, i, Frontline.ActivityId())
+        local rating = 0
+        if pvp then
+            rating = pvp.rating or 0
+        end
+        local mem = {
+            ["applicantId"] = applicantId,
+            ["index"] = i,
+            ["name"] = name,
+            ["role"] = role,
+            ["level"] = string.format("%.1f", level),
+            ["class"] = class,
+            ["classEn"] = classEn,
+            ["specLoc"] = specLoc,
+            ["specId"] = specId,
+            ["rating"] = rating,
+        }
+        cur_appl[i] = mem
+    end
+    for i, appl in ipairs(Frontline.applicants) do
+        if appl.id == applicantId then
+            Frontline.applicants[i] = cur_appl
+            Frontline.CreateApplicantFrames()
+            return
+        end
+    end
+    table.insert(Frontline.applicants, cur_appl)
+    Frontline.CreateApplicantFrames()
 end
