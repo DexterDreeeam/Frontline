@@ -14,25 +14,14 @@ function Frontline.Init()
     FrontlineFrameModeButton:SetText(Frontline.mode)
 end
 
-function Frontline.SavePosition()
-    local left = FrontlineFrame:GetLeft()
-    local top = FrontlineFrame:GetTop()
-    FrontlineDb = FrontlineDb or {}
-    FrontlineDb.left = left
-    FrontlineDb.top = top
-    FrontlineDb.collapse = Frontline.collapse
-end
-
-function Frontline.RestorePosition()
-    FrontlineFrame:ClearAllPoints()
-    Frontline.collapse = FrontlineDb.collapse
-    Frontline.SwitchCollapse(false)
-    FrontlineFrame:SetPoint(
-        "TOPLEFT",
-        UIParent,
-        "TOPLEFT",
-        FrontlineDb.left or 400,
-        -(FrontlineDb.top or 200))
+function Frontline.SwitchMode()
+    if Frontline.mode == "3v3" then
+        Frontline.mode = "2v2"
+    elseif Frontline.mode == "2v2" then
+        Frontline.mode = "3v3"
+    end
+    FrontlineFrameModeButton:SetText(Frontline.mode)
+    Frontline.Request()
 end
 
 function Frontline.HideAllFrames()
@@ -76,6 +65,8 @@ function Frontline.SwitchCollapse(switch)
         Frontline.ShowAllFrames()
         FrontlineFrameCollapseButton:SetText("Collapse")
     end
+    Frontline.RestorePosition()
+    Frontline.Request()
 end
 
 function Frontline.UpdateResult(cleanup)
@@ -160,7 +151,6 @@ function Frontline.ProcessResult()
             row_num = row_num + 1
         end
     end
-    Frontline.refreshing = false
 end
 
 function Frontline.RefreshFailed()
@@ -193,7 +183,6 @@ function Frontline.Clear()
     end
     FrontlineFrameScrollFrame:SetVerticalScroll(0)
     FrontlineFrameRefreshButton:SetText("Refresh")
-    Frontline.refreshing = false
 end
 
 function Frontline.UpdatePlayer()
@@ -202,18 +191,26 @@ function Frontline.UpdatePlayer()
 end
 
 function Frontline.Request()
-    Frontline.ButtonClickCountdown(FrontlineFrameRefreshButton, 3, "Refresh")
+    -- print("----Request")
     if Frontline.refreshing then
         return
     end
-    Frontline.Clear()
+    Frontline.UpdatePlayer()
     Frontline.refreshing = true
+    FrontlineFrameModeButton:Disable()
+    FrontlineFrameGroupFrameGroupButton:Disable()
+    Frontline.ButtonClickCountdown(FrontlineFrameRefreshButton, 3, "Refresh", function()
+        Frontline.refreshing = false
+        FrontlineFrameModeButton:Enable()
+        FrontlineFrameGroupFrameGroupButton:Enable()
+    end)
+    Frontline.Clear()
     C_LFGList.Search(Frontline.CategoryID_Arena)
 end
 
 function Frontline.CheckApplicantActivity()
     if Frontline.IsInActiveGroup() then
-        if Frontline.isGroupLeader() then
+        if Frontline.IsLeaderInActiveGroup() then
             Frontline.SetGroupButton("Delist")
         else
             Frontline.SetGroupButton("Exit")

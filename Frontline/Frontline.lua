@@ -35,7 +35,7 @@ Frontline.EventFrame:SetScript("OnEvent", function(self, event, ...)
             end
         end
         Frontline.Init()
-        Frontline.RestorePosition()
+        Frontline.RestoreFrame()
         if FrontlineFrame:IsShown() then
             Frontline.UpdatePlayer()
             Frontline.Request()

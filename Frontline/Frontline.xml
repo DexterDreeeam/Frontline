@@ -1,9 +1,9 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
     <!-- Main movable frame with black background -->
-    <Frame name="FrontlineFrame" parent="UIParent" frameStrata="MEDIUM" hidden="false" movable="true" enableMouse="true">
+    <Frame name="FrontlineFrame" parent="UIParent" frameStrata="MEDIUM" hidden="false" movable="true" enableMouse="true" clampedToScreen="true">
         <Size x="800" y="650"/>
         <Anchors>
-            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="UIParent"/>
+            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="UIParent"/>
         </Anchors>
 
         <!-- Background -->
@@ -77,7 +77,6 @@
                 </PushedTexture>
                 <Scripts>
                     <OnClick>
-                        Frontline.UpdatePlayer()
                         Frontline.Request()
                     </OnClick>
                 </Scripts>

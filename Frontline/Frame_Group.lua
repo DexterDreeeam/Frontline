@@ -16,14 +16,17 @@ function Frontline.ClearGroupButton()
 end
 
 function Frontline.SetGroupButton(text)
+    -- print(text)
     if Frontline.GroupButton ~= text then
-        Frontline.ButtonClickCountdown(
-            FrontlineFrameGroupFrameGroupButton,
-            2,
-            text,
-            function()
-                Frontline.GroupButton = text
-            end)
+        Frontline.GroupButton = text
+        FrontlineFrameGroupFrameGroupButton:SetText(text)
+        -- Frontline.ButtonClickCountdown(
+        --     FrontlineFrameGroupFrameGroupButton,
+        --     2,
+        --     text,
+        --     function()
+        --         Frontline.GroupButton = text
+        --     end)
     end
 end
 
@@ -55,17 +58,15 @@ function Frontline.Create()
     Frontline.blizTitleAnchor.height = blizTitle:GetHeight()
     Frontline.blizTitleAnchor.isShown = blizTitle:IsShown()
 
-    FrontlineFrameGroupFrameListButton.selectedCategory = Frontline.CategoryID_Arena
-    FrontlineFrameGroupFrameListButton.selectedActivity = Frontline.ActivityId()
-    blizTitle:SetParent(FrontlineFrameGroupFrameListButton)
+    FrontlineFrameGroupFrameGroupButton.selectedCategory = Frontline.CategoryID_Arena
+    FrontlineFrameGroupFrameGroupButton.selectedActivity = Frontline.ActivityId()
+    blizTitle:SetParent(FrontlineFrameGroupFrameGroupButton)
     blizTitle:ClearAllPoints()
     blizTitle:SetPoint("TOP", 0, -30)
-    blizTitle:SetSize(FrontlineFrameGroupFrameListButton:GetWidth(), FrontlineFrameGroupFrameListButton:GetHeight())
+    blizTitle:SetSize(FrontlineFrameGroupFrameGroupButton:GetWidth(), FrontlineFrameGroupFrameGroupButton:GetHeight())
     blizTitle:SetScript("OnTextChanged", function(name)
         InputBoxInstructions_OnTextChanged(name)
     end)
-    FrontlineFrameGroupFrameCreateButton:Hide()
-    FrontlineFrameGroupFrameListButton:Show()
 end
 
 function Frontline.List()
@@ -93,8 +94,9 @@ function Frontline.List()
         requiredPvpRating = 0,
     }
     local ok = C_LFGList.CreateListing(createData)
-    FrontlineFrameGroupFrameListButton:Hide()
-    FrontlineFrameGroupFrameCreateButton:Show()
+    C_Timer.After(0.5, function()
+    Frontline.Request()
+    end)
 end
 
 function Frontline.Delist()

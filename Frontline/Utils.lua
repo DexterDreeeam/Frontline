@@ -9,21 +9,36 @@ function Frontline.ActivityId()
     return ""
 end
 
-function Frontline.SwitchMode()
-    if Frontline.mode == "3v3" then
-        Frontline.mode = "2v2"
-    elseif Frontline.mode == "2v2" then
-        Frontline.mode = "3v3"
-    end
-    FrontlineFrameModeButton:SetText(Frontline.mode)
-end
-
 function Frontline.IsInActiveGroup()
     return C_LFGList.GetActiveEntryInfo() ~= nil
 end
 
 function Frontline.IsLeaderInActiveGroup()
     return Frontline.IsInActiveGroup() and UnitIsGroupLeader("player")
+end
+
+function Frontline.SavePosition()
+    local left = FrontlineFrame:GetLeft()
+    local top = FrontlineFrame:GetTop()
+    FrontlineDb = FrontlineDb or {}
+    FrontlineDb.left = left
+    FrontlineDb.top = top
+    FrontlineDb.collapse = Frontline.collapse
+end
+
+function Frontline.RestorePosition()
+    FrontlineFrame:ClearAllPoints()
+    FrontlineFrame:SetPoint(
+        "TOPLEFT",
+        UIParent,
+        "BOTTOMLEFT",
+        FrontlineDb.left or 400,
+        FrontlineDb.top or 1000)
+end
+
+function Frontline.RestoreFrame()
+    Frontline.collapse = FrontlineDb.collapse
+    Frontline.SwitchCollapse(false)
 end
 
 function Frontline.FillFrameWithColorByRole(f, role)
@@ -46,7 +61,8 @@ function Frontline.ButtonClickCountdown(button, dur, text, cb)
     button:SetText(tostring(dur))
     button:Disable()
     local countdown = dur
-    local ticker = C_Timer.NewTicker(1, function()
+    local ticker
+    ticker = C_Timer.NewTicker(1, function()
         countdown = countdown - 1
         if countdown > 0 then
             button:SetText(tostring(countdown))
