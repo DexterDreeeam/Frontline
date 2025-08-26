@@ -115,7 +115,7 @@ function GladiatorBoard.Delist()
 end
 
 function GladiatorBoard.Exit()
-    LeaveParty()
+    C_PartyInfo.LeaveParty()
 end
 
 function GladiatorBoard.ClearApplicantFrame()

@@ -247,6 +247,9 @@ end
 
 function GladiatorBoard.UpdateApplicant(applicantId)
     local applicantData = C_LFGList.GetApplicantInfo(applicantId)
+    if applicantData == nil then
+        return -- todo: investigate why nil
+    end
     local cur_appl = {
         id = applicantId,
         status = applicantData.applicationStatus,
