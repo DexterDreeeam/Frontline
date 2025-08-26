@@ -3,12 +3,12 @@
 ## Notes: PVP Group HUD
 ## Author: Dex
 ## Version: 11.2.0
-## SavedVariables: FrontlineDb
+## SavedVariables: GladiatorBoardDb
 
 Utils.lua
 Frame_LFG.lua
 Frame_Player.lua
 Frame_Group.lua
 DataModel.lua
-Frontline.xml
-Frontline.lua
+GladiatorBoard.xml
+GladiatorBoard.lua

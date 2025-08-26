@@ -1,102 +1,102 @@
-Frontline = Frontline or {}
-Frontline.TitleEditText = ""
-Frontline.CommentEditText = ""
-Frontline.GroupButton = "Create"
+GladiatorBoard = GladiatorBoard or {}
+GladiatorBoard.TitleEditText = ""
+GladiatorBoard.CommentEditText = ""
+GladiatorBoard.GroupButton = "Create"
 
-Frontline.FilterKeywords = {
+GladiatorBoard.FilterKeywords = {
     "要的", "顶级",
 }
 
-function Frontline.SetTitle(text)
-    Frontline.TitleEditText = text
+function GladiatorBoard.SetTitle(text)
+    GladiatorBoard.TitleEditText = text
 end
 
-function Frontline.SetComment(text)
-    Frontline.CommentEditText = text
+function GladiatorBoard.SetComment(text)
+    GladiatorBoard.CommentEditText = text
 end
 
-function Frontline.ClearGroupButton()
-    Frontline.SetGroupButton("Create")
+function GladiatorBoard.ClearGroupButton()
+    GladiatorBoard.SetGroupButton("Create")
 end
 
-function Frontline.SetGroupButton(text)
-    if Frontline.GroupButton ~= text then
-        Frontline.GroupButton = text
-        FrontlineFrameGroupFrameGroupButton:SetText(text)
-        -- Frontline.ButtonClickCountdown(
-        --     FrontlineFrameGroupFrameGroupButton,
+function GladiatorBoard.SetGroupButton(text)
+    if GladiatorBoard.GroupButton ~= text then
+        GladiatorBoard.GroupButton = text
+        GladiatorBoardFrameGroupFrameGroupButton:SetText(text)
+        -- GladiatorBoard.ButtonClickCountdown(
+        --     GladiatorBoardFrameGroupFrameGroupButton,
         --     2,
         --     text,
         --     function()
-        --         Frontline.GroupButton = text
+        --         GladiatorBoard.GroupButton = text
         --     end)
     end
 end
 
-function Frontline.OnGroupButton()
-    if Frontline.GroupButton == "Create" then
-        Frontline.Create()
-        Frontline.SetGroupButton("List")
-    elseif Frontline.GroupButton == "List" then
-        Frontline.List()
-        Frontline.ClearGroupButton()
-    elseif Frontline.GroupButton == "Delist" then
-        Frontline.Delist()
-        Frontline.ClearGroupButton()
-    elseif Frontline.GroupButton == "Exit" then
-        Frontline.Exit()
-        Frontline.ClearGroupButton()
-    elseif Frontline.GroupButton == "Queue" then
+function GladiatorBoard.OnGroupButton()
+    if GladiatorBoard.GroupButton == "Create" then
+        GladiatorBoard.Create()
+        GladiatorBoard.SetGroupButton("List")
+    elseif GladiatorBoard.GroupButton == "List" then
+        GladiatorBoard.List()
+        GladiatorBoard.ClearGroupButton()
+    elseif GladiatorBoard.GroupButton == "Delist" then
+        GladiatorBoard.Delist()
+        GladiatorBoard.ClearGroupButton()
+    elseif GladiatorBoard.GroupButton == "Exit" then
+        GladiatorBoard.Exit()
+        GladiatorBoard.ClearGroupButton()
+    elseif GladiatorBoard.GroupButton == "Queue" then
         if C_PvP.IsArena() or not UnitIsGroupLeader("player") then
             return
-        elseif Frontline.mode == "2v2" then
+        elseif GladiatorBoard.mode == "2v2" then
             pcall(JoinSkirmish, 4)
-        elseif Frontline.mode == "3v3" then
+        elseif GladiatorBoard.mode == "3v3" then
             pcall(JoinSkirmish, 5)
         end
     end
 end
 
-function Frontline.Create()
+function GladiatorBoard.Create()
     C_LFGList.RemoveListing()
 
     local blizTitle = LFGListFrame.EntryCreation.Name
-    Frontline.BlizTitleParent = blizTitle:GetParent()
-    Frontline.blizTitleAnchor = Frontline.blizTitleAnchor or {}
-    Frontline.blizTitleAnchor.point, Frontline.blizTitleAnchor.relativeTo, Frontline.blizTitleAnchor.relativePoint, 
-    Frontline.blizTitleAnchor.x, Frontline.blizTitleAnchor.y = blizTitle:GetPoint()
-    Frontline.blizTitleAnchor.width = blizTitle:GetWidth()
-    Frontline.blizTitleAnchor.height = blizTitle:GetHeight()
-    Frontline.blizTitleAnchor.isShown = blizTitle:IsShown()
+    GladiatorBoard.BlizTitleParent = blizTitle:GetParent()
+    GladiatorBoard.blizTitleAnchor = GladiatorBoard.blizTitleAnchor or {}
+    GladiatorBoard.blizTitleAnchor.point, GladiatorBoard.blizTitleAnchor.relativeTo, GladiatorBoard.blizTitleAnchor.relativePoint, 
+    GladiatorBoard.blizTitleAnchor.x, GladiatorBoard.blizTitleAnchor.y = blizTitle:GetPoint()
+    GladiatorBoard.blizTitleAnchor.width = blizTitle:GetWidth()
+    GladiatorBoard.blizTitleAnchor.height = blizTitle:GetHeight()
+    GladiatorBoard.blizTitleAnchor.isShown = blizTitle:IsShown()
 
-    FrontlineFrameGroupFrameGroupButton.selectedCategory = Frontline.CategoryID_Arena
-    FrontlineFrameGroupFrameGroupButton.selectedActivity = Frontline.ActivityId()
-    blizTitle:SetParent(FrontlineFrameGroupFrameGroupButton)
+    GladiatorBoardFrameGroupFrameGroupButton.selectedCategory = GladiatorBoard.CategoryID_Arena
+    GladiatorBoardFrameGroupFrameGroupButton.selectedActivity = GladiatorBoard.ActivityId()
+    blizTitle:SetParent(GladiatorBoardFrameGroupFrameGroupButton)
     blizTitle:ClearAllPoints()
     blizTitle:SetPoint("TOP", 0, -30)
-    blizTitle:SetSize(FrontlineFrameGroupFrameGroupButton:GetWidth(), FrontlineFrameGroupFrameGroupButton:GetHeight())
+    blizTitle:SetSize(GladiatorBoardFrameGroupFrameGroupButton:GetWidth(), GladiatorBoardFrameGroupFrameGroupButton:GetHeight())
     blizTitle:SetScript("OnTextChanged", function(name)
         InputBoxInstructions_OnTextChanged(name)
     end)
 end
 
-function Frontline.List()
-    Frontline.applicants = {}
+function GladiatorBoard.List()
+    GladiatorBoard.applicants = {}
     C_LFGList.RemoveListing()
     local blizTitle = LFGListFrame.EntryCreation.Name
-    blizTitle:SetParent(Frontline.BlizTitleParent)
+    blizTitle:SetParent(GladiatorBoard.BlizTitleParent)
     blizTitle:ClearAllPoints()
     blizTitle:SetPoint(
-        Frontline.blizTitleAnchor.point,
-        Frontline.blizTitleAnchor.relativeTo,
-        Frontline.blizTitleAnchor.relativePoint,
-        Frontline.blizTitleAnchor.x,
-        Frontline.blizTitleAnchor.y
+        GladiatorBoard.blizTitleAnchor.point,
+        GladiatorBoard.blizTitleAnchor.relativeTo,
+        GladiatorBoard.blizTitleAnchor.relativePoint,
+        GladiatorBoard.blizTitleAnchor.x,
+        GladiatorBoard.blizTitleAnchor.y
     )
-    blizTitle:SetSize(Frontline.blizTitleAnchor.width, Frontline.blizTitleAnchor.height)
+    blizTitle:SetSize(GladiatorBoard.blizTitleAnchor.width, GladiatorBoard.blizTitleAnchor.height)
 
     local createData = {
-        activityIDs = { Frontline.ActivityId() },
+        activityIDs = { GladiatorBoard.ActivityId() },
         isCrossFactionListing = false,
         isPrivateGroup = false,
         playstyle = 1,
@@ -106,20 +106,20 @@ function Frontline.List()
     }
     local ok = C_LFGList.CreateListing(createData)
     C_Timer.After(0.5, function()
-        Frontline.Request()
+        GladiatorBoard.Request()
     end)
 end
 
-function Frontline.Delist()
+function GladiatorBoard.Delist()
     C_LFGList.RemoveListing()
 end
 
-function Frontline.Exit()
+function GladiatorBoard.Exit()
     LeaveParty()
 end
 
-function Frontline.ClearApplicantFrame()
-    local children = {FrontlineFrameGroupFrameScrollFrameScrollChild:GetChildren()}
+function GladiatorBoard.ClearApplicantFrame()
+    local children = {GladiatorBoardFrameGroupFrameScrollFrameScrollChild:GetChildren()}
     for _, child in ipairs(children) do
         if child then
             child:ClearAllPoints()
@@ -129,7 +129,7 @@ function Frontline.ClearApplicantFrame()
     end
 end
 
-function Frontline.InteractiveStatus(status)
+function GladiatorBoard.InteractiveStatus(status)
     if status == "applied" then
         return true
     elseif status == "invited" then
@@ -139,14 +139,14 @@ function Frontline.InteractiveStatus(status)
     end
 end
 
-function Frontline.CreateApplicantFrames()
-    if Frontline.applicants == nil then
+function GladiatorBoard.CreateApplicantFrames()
+    if GladiatorBoard.applicants == nil then
         return
     end
 
-    Frontline.ClearApplicantFrame()
+    GladiatorBoard.ClearApplicantFrame()
 
-    table.sort(Frontline.applicants, function(a, b)
+    table.sort(GladiatorBoard.applicants, function(a, b)
         if a.applicantId == nil and b.applicantId then
             return false
         elseif a.applicantId == nil then
@@ -162,13 +162,13 @@ function Frontline.CreateApplicantFrames()
         end
     end)
 
-    for i,appl in ipairs(Frontline.applicants) do
-        local row = CreateFrame("Frame", nil, FrontlineFrameGroupFrameScrollFrameScrollChild)
+    for i,appl in ipairs(GladiatorBoard.applicants) do
+        local row = CreateFrame("Frame", nil, GladiatorBoardFrameGroupFrameScrollFrameScrollChild)
         row:SetSize(150, 36)
         row:SetPoint("TOPLEFT", 0, -40 * (i-1))
         local bg = row:CreateTexture(nil, "BACKGROUND")
         bg:SetAllPoints()
-        if Frontline.InteractiveStatus(appl.status) then
+        if GladiatorBoard.InteractiveStatus(appl.status) then
             row:EnableMouse(true)
             row.highlight = row:CreateTexture(nil, "HIGHLIGHT")
             row.highlight:SetAllPoints()
@@ -182,9 +182,9 @@ function Frontline.CreateApplicantFrames()
                 GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
                 for _,m in ipairs(appl) do
                     local classSpecStr = m.class .. " - " .. m.specLoc
-                    local activityStr = Frontline.mode .. " - " .. m.rating
+                    local activityStr = GladiatorBoard.mode .. " - " .. m.rating
                     local itemLevelStr = "PVP Item: " .. m.level
-                    local color = Frontline.GetColorByClassEn(m.classEn)
+                    local color = GladiatorBoard.GetColorByClassEn(m.classEn)
                     GameTooltip:SetText(m.name, color.r, color.g, color.b, true)
                     GameTooltip:AddLine(classSpecStr, 0.6, 0.6, 0.6, true)
                     GameTooltip:AddLine(activityStr, 0.6, 0.6, 0.6, true)
@@ -208,17 +208,17 @@ function Frontline.CreateApplicantFrames()
         iconFrame:SetSize(32, 32)
         iconFrame:SetPoint("LEFT", 4, 0)
         iconFrame:SetFrameLevel(row:GetFrameLevel() + 2)
-        Frontline.FillFrameWithColorByRole(iconFrame, mem.role)
+        GladiatorBoard.FillFrameWithColorByRole(iconFrame, mem.role)
         local icon = iconFrame:CreateTexture(nil, "ARTWORK")
-        local path = "Interface\\AddOns\\Frontline\\media\\Spec_"..mem.specId..".tga"
+        local path = "Interface\\AddOns\\GladiatorBoard\\media\\Spec_"..mem.specId..".tga"
         icon:SetSize(28, 28)
         icon:SetPoint("CENTER", 0, 0)
         icon:SetTexture(path)
 
         local nameText = row:CreateFontString(nil, "ARTWORK", "NumberFontNormal")
         nameText:SetPoint("BOTTOMLEFT", row, "LEFT", 42, 1)
-        nameText:SetText(Frontline.TruncateRealm(mem.name))
-        local color = Frontline.GetColorByClassEn(mem.classEn)
+        nameText:SetText(GladiatorBoard.TruncateRealm(mem.name))
+        local color = GladiatorBoard.GetColorByClassEn(mem.classEn)
         nameText:SetTextColor(color.r, color.g, color.b)
         nameText:SetJustifyH("LEFT")
         nameText:SetWidth(150)
@@ -245,7 +245,7 @@ function Frontline.CreateApplicantFrames()
             appl.status == "declined" or
             appl.status == "declined_full" or
             appl.status == "inviteaccepted" then
-            stateIcon:SetTexture("Interface\\AddOns\\Frontline\\media\\Applicant_"..appl.status..".tga")
+            stateIcon:SetTexture("Interface\\AddOns\\GladiatorBoard\\media\\Applicant_"..appl.status..".tga")
             stateIcon:SetAlpha(0.5)
         end
     end

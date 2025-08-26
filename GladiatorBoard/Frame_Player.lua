@@ -1,7 +1,7 @@
-Frontline = Frontline or {}
+GladiatorBoard = GladiatorBoard or {}
 
-function Frontline.ClearPlayer()
-    for _,child in pairs({FrontlineFramePlayerFrame:GetChildren()}) do
+function GladiatorBoard.ClearPlayer()
+    for _,child in pairs({GladiatorBoardFramePlayerFrame:GetChildren()}) do
         if child then
             child:Hide()
             child:SetParent(nil)
@@ -10,9 +10,9 @@ function Frontline.ClearPlayer()
     end
 end
 
-function Frontline.CreatePlayerFrame()
-    local playerFrame = CreateFrame("Frame", nil, FrontlineFramePlayerFrame)
-    playerFrame:SetAllPoints(FrontlineFramePlayerFrame)
+function GladiatorBoard.CreatePlayerFrame()
+    local playerFrame = CreateFrame("Frame", nil, GladiatorBoardFramePlayerFrame)
+    playerFrame:SetAllPoints(GladiatorBoardFramePlayerFrame)
     playerFrame:CreateTexture(nil, "OVERLAY")
 
     local spec_idx = GetSpecialization()
@@ -25,14 +25,14 @@ function Frontline.CreatePlayerFrame()
     end
 
     local icon = playerFrame:CreateTexture(nil, "ARTWORK")
-    local path = "Interface\\AddOns\\Frontline\\media\\Spec_"..spec_id..".tga"
+    local path = "Interface\\AddOns\\GladiatorBoard\\media\\Spec_"..spec_id..".tga"
     icon:SetSize(60, 60)
     icon:SetPoint("TOPRIGHT", playerFrame, "TOP", -4, -5)
     icon:SetTexture(path)
 
     local modeString = playerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     modeString:SetPoint("TOPLEFT", playerFrame, "TOP", 4, -10)
-    modeString:SetText(Frontline.mode or "")
+    modeString:SetText(GladiatorBoard.mode or "")
     modeString:SetJustifyH("LEFT")
     modeString:SetShadowColor(0, 0, 0, 1.0)
     modeString:SetShadowOffset(2, -2)
@@ -45,9 +45,9 @@ function Frontline.CreatePlayerFrame()
     local seasonCnt = 0
     local seasonWon = 0
     local seasonRate = "0.0"
-    if Frontline.mode == "2v2" then
+    if GladiatorBoard.mode == "2v2" then
         rating, hightest, _, seasonCnt, seasonWon, weekCnt, weekWon = GetPersonalRatedInfo(1)
-    elseif Frontline.mode == "3v3" then
+    elseif GladiatorBoard.mode == "3v3" then
         rating, hightest, _, seasonCnt, seasonWon, weekCnt, weekWon = GetPersonalRatedInfo(2)
     end
     if seasonWon and seasonCnt and seasonCnt >= 1 then

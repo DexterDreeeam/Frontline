@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
     <!-- Main movable frame with black background -->
-    <Frame name="FrontlineFrame" parent="UIParent" frameStrata="HIGH" hidden="false" movable="true" enableMouse="true" clampedToScreen="true">
+    <Frame name="GladiatorBoardFrame" parent="UIParent" frameStrata="HIGH" hidden="false" movable="true" enableMouse="true" clampedToScreen="true">
         <Size x="800" y="650"/>
         <Anchors>
             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="UIParent"/>
@@ -53,7 +53,7 @@
                 </PushedTexture>
                 <Scripts>
                     <OnClick>
-                        Frontline.SwitchCollapse(true)
+                        GladiatorBoard.SwitchCollapse(true)
                     </OnClick>
                 </Scripts>
             </Button>
@@ -77,7 +77,7 @@
                 </PushedTexture>
                 <Scripts>
                     <OnClick>
-                        Frontline.Request()
+                        GladiatorBoard.Request()
                     </OnClick>
                 </Scripts>
             </Button>
@@ -101,7 +101,7 @@
                 </PushedTexture>
                 <Scripts>
                     <OnClick>
-                        Frontline.SwitchMode()
+                        GladiatorBoard.SwitchMode()
                     </OnClick>
                 </Scripts>
             </Button>
@@ -156,7 +156,7 @@
                         </PushedTexture>
                         <Scripts>
                             <OnClick>
-                                Frontline.OnGroupButton()
+                                GladiatorBoard.OnGroupButton()
                             </OnClick>
                         </Scripts>
                     </Button>
@@ -191,9 +191,9 @@
             </OnDragStart>
             <OnDragStop>
                 self:StopMovingOrSizing()
-                Frontline.SavePosition()
-                <!-- FrontlineFrame:ClearAllPoints()
-                FrontlineFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT") -->
+                GladiatorBoard.SavePosition()
+                <!-- GladiatorBoardFrame:ClearAllPoints()
+                GladiatorBoardFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT") -->
             </OnDragStop>
         </Scripts>
     </Frame>

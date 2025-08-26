@@ -1,7 +1,7 @@
-Frontline = Frontline or {}
-Frontline.specIcon = nil
+GladiatorBoard = GladiatorBoard or {}
+GladiatorBoard.specIcon = nil
 
-function Frontline.GetLeaderRating(result)
+function GladiatorBoard.GetLeaderRating(result)
     if result.leaderPvpRatingInfo then
         for _,info in pairs(result.leaderPvpRatingInfo) do
             if info and info.rating then
@@ -12,7 +12,7 @@ function Frontline.GetLeaderRating(result)
     return -1
 end
 
-function Frontline.GetMembersInfo(result)
+function GladiatorBoard.GetMembersInfo(result)
     local members = {}
     for i = 1, result.numMembers do
         local mRole,mClassEn,mClass,mSpec,mLeader = C_LFGList.GetSearchResultMemberInfo(result.searchResultID, i)
@@ -44,34 +44,34 @@ function Frontline.GetMembersInfo(result)
     return members
 end
 
-function Frontline.TruncateTitle(text)
+function GladiatorBoard.TruncateTitle(text)
     return text
 end
 
-function Frontline.TruncateRealm(text)
+function GladiatorBoard.TruncateRealm(text)
     if not text then return "" end
     local nameOnly = text:match("^(.+)-[^-]+$") or text
     return nameOnly
 end
 
-function Frontline.GetSpecIdFromLocalizedName(member)
+function GladiatorBoard.GetSpecIdFromLocalizedName(member)
     local str = strlower(member.class)..strlower(member.spec)
-    if Frontline.specIds ~= nil then
-        return Frontline.specIds[str]
+    if GladiatorBoard.specIds ~= nil then
+        return GladiatorBoard.specIds[str]
     end
-    Frontline.specIds = {}
+    GladiatorBoard.specIds = {}
     for classId = 1, MAX_CLASSES do
         local className, classTag, classId = GetClassInfo(classId)
         local numSpecs = GetNumSpecializationsForClassID(classId)
         for specIndex = 1, numSpecs do
             local specId, specName = GetSpecializationInfoForClassID(classId, specIndex)
-            Frontline.specIds[strlower(className)..strlower(specName)] = specId
+            GladiatorBoard.specIds[strlower(className)..strlower(specName)] = specId
         end
     end
-    return Frontline.specIds[str]
+    return GladiatorBoard.specIds[str]
 end
 
-function Frontline.SetRoleIcon(f, member, icon)
+function GladiatorBoard.SetRoleIcon(f, member, icon)
     local roleIcon = f:CreateTexture(nil, "ARTWORK", nil, 1)
     roleIcon:SetSize(22, 22)
     roleIcon:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 6, -6)
@@ -82,15 +82,15 @@ function Frontline.SetRoleIcon(f, member, icon)
         return
     end
 
-    -- local specId = Frontline.GetSpecIdFromLocalizedName(member)
+    -- local specId = GladiatorBoard.GetSpecIdFromLocalizedName(member)
     -- if specId then
-    --     local iconPath = "Interface\\AddOns\\Frontline\\media\\Spec_"..specId..".tga"
+    --     local iconPath = "Interface\\AddOns\\GladiatorBoard\\media\\Spec_"..specId..".tga"
     --     roleIcon:SetTexture(iconPath)
     --     return
     -- end
 end
 
-function Frontline.IsGroupDisabled(group)
+function GladiatorBoard.IsGroupDisabled(group)
     if group.delist then
         return true
     elseif group.status == "cancelled" then
@@ -102,8 +102,8 @@ function Frontline.IsGroupDisabled(group)
     end
 end
 
-function Frontline.CreateGroupFrame(index, group)
-    local row = CreateFrame("Frame", nil, FrontlineFrameScrollFrameScrollChild)
+function GladiatorBoard.CreateGroupFrame(index, group)
+    local row = CreateFrame("Frame", nil, GladiatorBoardFrameScrollFrameScrollChild)
     row:SetSize(560, 38)
     row:SetPoint("TOPLEFT", 0, -44 * (index-1))
 
@@ -116,7 +116,7 @@ function Frontline.CreateGroupFrame(index, group)
     else
         bg:SetColorTexture(0.15, 0.15, 0.15, 0.7)
     end
-    if Frontline.IsGroupDisabled(group) then
+    if GladiatorBoard.IsGroupDisabled(group) then
         local darkOverlay = row:CreateTexture(nil, "OVERLAY", nil, 5)
         darkOverlay:SetAllPoints()
         darkOverlay:SetColorTexture(0, 0, 0, 0.65)
@@ -168,12 +168,12 @@ function Frontline.CreateGroupFrame(index, group)
     ofst_x = ofst_x + 20
     local leaderText = row:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     leaderText:SetPoint("LEFT", ofst_x - 20, 0)
-    leaderText:SetText(Frontline.TruncateRealm(group.leader))
+    leaderText:SetText(GladiatorBoard.TruncateRealm(group.leader))
     leaderText:SetJustifyH("RIGHT")
     leaderText:SetWidth(126)
     ratingText:SetShadowColor(0, 0, 0, 1.0)
     ratingText:SetShadowOffset(2, -2)
-    local color = Frontline.GetColorByClassEn(group.members[1].classEn)
+    local color = GladiatorBoard.GetColorByClassEn(group.members[1].classEn)
     if color then
         leaderText:SetTextColor(color.r, color.g, color.b)
     end
@@ -208,17 +208,17 @@ function Frontline.CreateGroupFrame(index, group)
         end
         border_fn(iconFrame, member)
 
-        local specId = Frontline.GetSpecIdFromLocalizedName(member)
+        local specId = GladiatorBoard.GetSpecIdFromLocalizedName(member)
         local icon = iconFrame:CreateTexture(nil, "ARTWORK")
-        local path = "Interface\\AddOns\\Frontline\\media\\ClassIcon_"..member.classEn..".tga"
+        local path = "Interface\\AddOns\\GladiatorBoard\\media\\ClassIcon_"..member.classEn..".tga"
         if member.role ~= "HEALER" and specId then
-            path = "Interface\\AddOns\\Frontline\\media\\Spec_"..specId..".tga"
+            path = "Interface\\AddOns\\GladiatorBoard\\media\\Spec_"..specId..".tga"
         end
         icon:SetSize(28, 28)
         icon:SetPoint("CENTER", 0, 0)
         icon:SetTexture(path)
 
-        Frontline.SetRoleIcon(iconFrame, member, icon)
+        GladiatorBoard.SetRoleIcon(iconFrame, member, icon)
         exists_num = exists_num + 1
         icon_ofst = icon_ofst + 40
     end
@@ -237,7 +237,7 @@ function Frontline.CreateGroupFrame(index, group)
     ofst_x = ofst_x + 20
     local groupText = row:CreateFontString(nil, "ARTWORK", "ChatFontNormal")
     groupText:SetPoint("LEFT", ofst_x, 0)
-    groupText:SetText(Frontline.TruncateTitle(group.title))
+    groupText:SetText(GladiatorBoard.TruncateTitle(group.title))
     groupText:SetJustifyH("LEFT")
     groupText:SetTextColor(0.7, 0.7, 0.6)
     groupText:SetWidth(200)
@@ -259,7 +259,7 @@ function Frontline.CreateGroupFrame(index, group)
         group.status == "invited" or
         group.status == "invitedeclined" or
         group.status == "cancelled" then
-        stateIcon:SetTexture("Interface\\AddOns\\Frontline\\media\\Status_"..group.status..".tga")
+        stateIcon:SetTexture("Interface\\AddOns\\GladiatorBoard\\media\\Status_"..group.status..".tga")
         stateIcon:SetAlpha(0.7)
     end
 
