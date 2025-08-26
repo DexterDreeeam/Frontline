@@ -1,8 +1,8 @@
 ## Interface: 110200
-## Title: Frontline
+## Title: GladiatorBoard
 ## Notes: PVP Group HUD
-## Author: YourName
-## Version: 1.0
+## Author: Dex
+## Version: 11.2.0
 ## SavedVariables: FrontlineDb
 
 Utils.lua

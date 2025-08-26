@@ -61,7 +61,7 @@ function Frontline.SwitchCollapse(switch)
     if Frontline.collapse then
         Frontline.HideAllFrames()
         FrontlineFrame:SetSize(160, 50)
-        FrontlineFrameCollapseButton:SetText("Frontline")
+        FrontlineFrameCollapseButton:SetText("Board")
     else
         FrontlineFrame:SetSize(800, 650)
         Frontline.ShowAllFrames()

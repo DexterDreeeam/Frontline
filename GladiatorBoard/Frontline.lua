@@ -51,3 +51,13 @@ SlashCmdList["FRONTLINE"] = function()
         Frontline.Request()
     end
 end
+
+SLASH_GLADIATORBOARD1 = "/gb"
+SlashCmdList["GLADIATORBOARD"] = function()
+    if FrontlineFrame:IsShown() then
+        FrontlineFrame:Hide()
+    else
+        FrontlineFrame:Show()
+        Frontline.Request()
+    end
+end
