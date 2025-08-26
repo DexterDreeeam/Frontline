@@ -1,12 +1,37 @@
 Frontline = Frontline or {}
 
+function Frontline.GetActivities()
+    for _,catId in pairs(C_LFGList.GetAvailableCategories()) do
+        if catId then
+            local cat = C_LFGList.GetLfgCategoryInfo(catId)
+            if cat and cat.name == "竞技场" then
+                Frontline.CategoryID_Arena = catId
+            end
+        end
+    end
+    for _,actId in pairs(C_LFGList.GetAvailableActivities(Frontline.CategoryID_Arena)) do
+        if actId then
+            local act = C_LFGList.GetActivityInfoTable(actId)
+            if act and act.fullName == "竞技场（2v2）" then
+                Frontline.ActivityId_2v2 = actId
+            end
+            if act and act.fullName == "竞技场（3v3）" then
+                Frontline.ActivityId_3v3 = actId
+            end
+        end
+    end
+end
+
 function Frontline.ActivityId()
+    if Frontline.ActivityId_3v3 == nil or Frontline.ActivityId_2v2 == nil then
+        Frontline.GetActivities()
+    end
     if Frontline.mode == "3v3" then
         return Frontline.ActivityId_3v3
     elseif Frontline.mode == "2v2" then
         return Frontline.ActivityId_2v2
     end
-    return ""
+    return 3
 end
 
 function Frontline.IsInActiveGroup()

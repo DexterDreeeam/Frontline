@@ -102,8 +102,6 @@
                 <Scripts>
                     <OnClick>
                         Frontline.SwitchMode()
-                        Frontline.UpdatePlayer()
-                        Frontline.Request()
                     </OnClick>
                 </Scripts>
             </Button>

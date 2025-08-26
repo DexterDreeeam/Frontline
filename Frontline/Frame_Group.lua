@@ -3,6 +3,10 @@ Frontline.TitleEditText = ""
 Frontline.CommentEditText = ""
 Frontline.GroupButton = "Create"
 
+Frontline.FilterKeywords = {
+    "要的", "顶级",
+}
+
 function Frontline.SetTitle(text)
     Frontline.TitleEditText = text
 end
@@ -16,7 +20,6 @@ function Frontline.ClearGroupButton()
 end
 
 function Frontline.SetGroupButton(text)
-    -- print(text)
     if Frontline.GroupButton ~= text then
         Frontline.GroupButton = text
         FrontlineFrameGroupFrameGroupButton:SetText(text)
@@ -43,6 +46,14 @@ function Frontline.OnGroupButton()
     elseif Frontline.GroupButton == "Exit" then
         Frontline.Exit()
         Frontline.ClearGroupButton()
+    elseif Frontline.GroupButton == "Queue" then
+        if C_PvP.IsArena() or not UnitIsGroupLeader("player") then
+            return
+        elseif Frontline.mode == "2v2" then
+            pcall(JoinSkirmish, 4)
+        elseif Frontline.mode == "3v3" then
+            pcall(JoinSkirmish, 5)
+        end
     end
 end
 
@@ -95,7 +106,7 @@ function Frontline.List()
     }
     local ok = C_LFGList.CreateListing(createData)
     C_Timer.After(0.5, function()
-    Frontline.Request()
+        Frontline.Request()
     end)
 end
 
@@ -172,7 +183,7 @@ function Frontline.CreateApplicantFrames()
                 for _,m in ipairs(appl) do
                     local classSpecStr = m.class .. " - " .. m.specLoc
                     local activityStr = Frontline.mode .. " - " .. m.rating
-                    local itemLevelStr = "PVP装备：" .. m.level
+                    local itemLevelStr = "PVP Item: " .. m.level
                     local color = Frontline.GetColorByClassEn(m.classEn)
                     GameTooltip:SetText(m.name, color.r, color.g, color.b, true)
                     GameTooltip:AddLine(classSpecStr, 0.6, 0.6, 0.6, true)
@@ -205,7 +216,7 @@ function Frontline.CreateApplicantFrames()
         icon:SetTexture(path)
 
         local nameText = row:CreateFontString(nil, "ARTWORK", "NumberFontNormal")
-        nameText:SetPoint("BOTTOMLEFT", row, "LEFT", 40, 1)
+        nameText:SetPoint("BOTTOMLEFT", row, "LEFT", 42, 1)
         nameText:SetText(Frontline.TruncateRealm(mem.name))
         local color = Frontline.GetColorByClassEn(mem.classEn)
         nameText:SetTextColor(color.r, color.g, color.b)
@@ -215,7 +226,7 @@ function Frontline.CreateApplicantFrames()
         nameText:SetShadowOffset(2, -2)
 
         local ratingText = row:CreateFontString(nil, "ARTWORK", "NumberFontNormal")
-        ratingText:SetPoint("TOPLEFT", row, "LEFT", 40, -1)
+        ratingText:SetPoint("TOPLEFT", row, "LEFT", 44, -1)
         ratingText:SetText(mem.rating .. " - " .. mem.level)
         ratingText:SetJustifyH("LEFT")
         ratingText:SetWidth(150)

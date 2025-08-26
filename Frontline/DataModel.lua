@@ -11,6 +11,7 @@ Frontline.applicants = {}
 
 function Frontline.Init()
     FrontlineFrameRefreshButton:SetText("Refresh")
+    Frontline.mode = FrontlineDb.mode or "3v3"
     FrontlineFrameModeButton:SetText(Frontline.mode)
 end
 
@@ -21,6 +22,7 @@ function Frontline.SwitchMode()
         Frontline.mode = "3v3"
     end
     FrontlineFrameModeButton:SetText(Frontline.mode)
+    FrontlineDb.mode = Frontline.mode
     Frontline.Request()
 end
 
@@ -66,7 +68,11 @@ function Frontline.SwitchCollapse(switch)
         FrontlineFrameCollapseButton:SetText("Collapse")
     end
     Frontline.RestorePosition()
-    Frontline.Request()
+    if switch == true and not Frontline.collapse then
+        Frontline.Request()
+    else
+        Frontline.CheckApplicantActivity()
+    end
 end
 
 function Frontline.UpdateResult(cleanup)
@@ -192,14 +198,16 @@ end
 
 function Frontline.Request()
     -- print("----Request")
+    Frontline.UpdatePlayer()
+    Frontline.CheckApplicantActivity()
     if Frontline.refreshing then
         return
     end
     Frontline.refreshing = true
-    Frontline.UpdatePlayer()
+    Frontline.GetActivities()
     FrontlineFrameModeButton:Disable()
     FrontlineFrameGroupFrameGroupButton:Disable()
-    Frontline.ButtonClickCountdown(FrontlineFrameRefreshButton, 3, "Refresh", function()
+    Frontline.ButtonClickCountdown(FrontlineFrameRefreshButton, 2, "Refresh", function()
         Frontline.refreshing = false
         FrontlineFrameModeButton:Enable()
         FrontlineFrameGroupFrameGroupButton:Enable()
@@ -209,7 +217,11 @@ function Frontline.Request()
 end
 
 function Frontline.CheckApplicantActivity()
-    if Frontline.IsInActiveGroup() then
+    if Frontline.mode == "3v3" and GetNumGroupMembers() == 3 then
+        Frontline.SetGroupButton("Queue")
+    elseif Frontline.mode == "2v2" and GetNumGroupMembers() == 2 then
+        Frontline.SetGroupButton("Queue")
+    elseif Frontline.IsInActiveGroup() then
         if Frontline.IsLeaderInActiveGroup() then
             Frontline.SetGroupButton("Delist")
         else

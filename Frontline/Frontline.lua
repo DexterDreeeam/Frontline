@@ -4,6 +4,7 @@ Frontline.ActivityId_2v2 = 2
 Frontline.ActivityId_3v3 = 3
 Frontline.EventFrame = CreateFrame("Frame")
 Frontline.EventFrame:RegisterEvent("ADDON_LOADED")
+Frontline.EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_SEARCH_RESULTS_RECEIVED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_SEARCH_FAILED")
 Frontline.EventFrame:RegisterEvent("LFG_LIST_SEARCH_RESULT_UPDATED")
@@ -15,29 +16,10 @@ Frontline.EventFrame:SetScript("OnEvent", function(self, event, ...)
     -- print("Frontline - " .. event)
     if event == "ADDON_LOADED" then
         FrontlineDb = FrontlineDb or {}
-        for _,catId in pairs(C_LFGList.GetAvailableCategories()) do
-            if catId then
-                local cat = C_LFGList.GetLfgCategoryInfo(catId)
-                if cat and cat.name == "竞技场" then
-                    Frontline.CategoryID_Arena = catId
-                end
-            end
-        end
-        for _,actId in pairs(C_LFGList.GetAvailableActivities(Frontline.CategoryID_Arena)) do
-            if actId then
-                local act = C_LFGList.GetActivityInfoTable(actId)
-                if act and act.fullName == "竞技场（2v2）" then
-                    Frontline.ActivityId_2v2 = actId
-                end
-                if act and act.fullName == "竞技场（3v3）" then
-                    Frontline.ActivityId_3v3 = actId
-                end
-            end
-        end
+        Frontline.GetActivities()
         Frontline.Init()
         Frontline.RestoreFrame()
         if FrontlineFrame:IsShown() then
-            Frontline.UpdatePlayer()
             Frontline.Request()
         end
     elseif event == "LFG_LIST_SEARCH_RESULTS_RECEIVED" then
@@ -55,6 +37,8 @@ Frontline.EventFrame:SetScript("OnEvent", function(self, event, ...)
         -- Frontline.UpdateApplicant(...)
     elseif event == "LFG_LIST_ACTIVE_ENTRY_UPDATE" then
         Frontline.CheckApplicantActivity()
+    elseif event == "GROUP_ROSTER_UPDATE" then
+        Frontline.CheckApplicantActivity()
     end
 end)
 
@@ -64,7 +48,6 @@ SlashCmdList["FRONTLINE"] = function()
         FrontlineFrame:Hide()
     else
         FrontlineFrame:Show()
-        Frontline.UpdatePlayer()
         Frontline.Request()
     end
 end
