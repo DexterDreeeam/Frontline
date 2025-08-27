@@ -8,11 +8,17 @@ GladiatorBoard.status = {}
 GladiatorBoard.inGroup = false
 GladiatorBoard.isGroupLeader = false
 GladiatorBoard.applicants = {}
+GladiatorBoardDb = GladiatorBoardDb or {}
 
 function GladiatorBoard.Init()
     GladiatorBoardFrameRefreshButton:SetText("Refresh")
     GladiatorBoard.mode = GladiatorBoardDb.mode or "3v3"
     GladiatorBoardFrameModeButton:SetText(GladiatorBoard.mode)
+end
+
+function GladiatorBoard.Reset()
+    GladiatorBoardDb = nil
+    ReloadUI()
 end
 
 function GladiatorBoard.SwitchMode()
@@ -67,7 +73,9 @@ function GladiatorBoard.SwitchCollapse(switch)
         GladiatorBoard.ShowAllFrames()
         GladiatorBoardFrameCollapseButton:SetText("Collapse")
     end
-    GladiatorBoard.RestorePosition()
+    if switch then
+        GladiatorBoard.RestorePosition()
+    end
     if switch == true and not GladiatorBoard.collapse then
         GladiatorBoard.Request()
     else
@@ -155,10 +163,11 @@ function GladiatorBoard.ProcessResult()
             end
         end
     end
+    GladiatorBoard.FilterGroups()
     GladiatorBoard.SortGroups()
-    local row_num = 1
     GladiatorBoard.inGroup = false
     GladiatorBoard.isGroupLeader = false
+    local row_num = 1
     for i,g in ipairs(GladiatorBoard.groups) do
         if g.hasSelf then
             GladiatorBoard.inGroup = true
@@ -229,11 +238,14 @@ function GladiatorBoard.Request()
 end
 
 function GladiatorBoard.CheckApplicantActivity()
-    if GladiatorBoard.mode == "3v3" and GetNumGroupMembers() == 3 then
-        GladiatorBoard.SetGroupButton("Queue")
-    elseif GladiatorBoard.mode == "2v2" and GetNumGroupMembers() == 2 then
-        GladiatorBoard.SetGroupButton("Queue")
-    elseif GladiatorBoard.IsInActiveGroup() then
+    -- if GladiatorBoard.mode == "3v3" and GetNumGroupMembers() == 3 then
+    --     GladiatorBoard.SetGroupButton("Queue")
+    --     return
+    -- elseif GladiatorBoard.mode == "2v2" and GetNumGroupMembers() == 2 then
+    --     GladiatorBoard.SetGroupButton("Queue")
+    --     return
+    -- end
+    if GladiatorBoard.IsInActiveGroup() then
         if GladiatorBoard.IsLeaderInActiveGroup() then
             GladiatorBoard.SetGroupButton("Delist")
         else

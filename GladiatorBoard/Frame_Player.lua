@@ -1,4 +1,5 @@
 GladiatorBoard = GladiatorBoard or {}
+GladiatorBoardDb = GladiatorBoardDb or {}
 
 function GladiatorBoard.ClearPlayer()
     for _,child in pairs({GladiatorBoardFramePlayerFrame:GetChildren()}) do

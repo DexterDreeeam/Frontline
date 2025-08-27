@@ -2,10 +2,7 @@ GladiatorBoard = GladiatorBoard or {}
 GladiatorBoard.TitleEditText = ""
 GladiatorBoard.CommentEditText = ""
 GladiatorBoard.GroupButton = "Create"
-
-GladiatorBoard.FilterKeywords = {
-    "要的", "顶级",
-}
+GladiatorBoardDb = GladiatorBoardDb or {}
 
 function GladiatorBoard.SetTitle(text)
     GladiatorBoard.TitleEditText = text
@@ -50,9 +47,9 @@ function GladiatorBoard.OnGroupButton()
         if C_PvP.IsArena() or not UnitIsGroupLeader("player") then
             return
         elseif GladiatorBoard.mode == "2v2" then
-            pcall(JoinSkirmish, 4)
+            pcall(JoinArena, 2) -- banned
         elseif GladiatorBoard.mode == "3v3" then
-            pcall(JoinSkirmish, 5)
+            pcall(JoinArena, 3) -- banned
         end
     end
 end

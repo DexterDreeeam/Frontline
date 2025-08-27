@@ -1,5 +1,6 @@
 GladiatorBoard = GladiatorBoard or {}
 GladiatorBoard.specIcon = nil
+GladiatorBoardDb = GladiatorBoardDb or {}
 
 function GladiatorBoard.GetLeaderRating(result)
     if result.leaderPvpRatingInfo then

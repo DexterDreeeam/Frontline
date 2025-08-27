@@ -1,7 +1,7 @@
 GladiatorBoard = GladiatorBoard or {}
 GladiatorBoard.CategoryID_Arena = 4
-GladiatorBoard.ActivityId_2v2 = 2
-GladiatorBoard.ActivityId_3v3 = 3
+GladiatorBoard.ActivityId_2v2 = 6
+GladiatorBoard.ActivityId_3v3 = 7
 GladiatorBoard.EventFrame = CreateFrame("Frame")
 GladiatorBoard.EventFrame:RegisterEvent("ADDON_LOADED")
 GladiatorBoard.EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")

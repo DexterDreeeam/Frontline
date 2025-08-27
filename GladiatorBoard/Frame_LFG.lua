@@ -1,5 +1,6 @@
 GladiatorBoard = GladiatorBoard or {}
 GladiatorBoard.specIcon = nil
+GladiatorBoardDb = GladiatorBoardDb or {}
 
 function GladiatorBoard.GetLeaderRating(result)
     if result.leaderPvpRatingInfo then
@@ -179,6 +180,10 @@ function GladiatorBoard.CreateGroupFrame(index, group)
                     elseif group.status == "applied" then
                         C_LFGList.CancelApplication(group.id)
                     end
+                elseif button == "RightButton" then
+                    GladiatorBoardDb.FilteredLeaders = GladiatorBoardDb.FilteredLeaders or {}
+                    GladiatorBoardDb.FilteredLeaders[group.leader] = true
+                    print("|cFFFF0000[Gladiator Board] Filtered Leader: " .. group.leader)
                 end
             end)
         end

@@ -58,6 +58,30 @@
                 </Scripts>
             </Button>
 
+            <!-- Reset Button -->
+            <Button name="$parentResetButton" text="Reset">
+                <Size x="120" y="30"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="140" y="-10"/>
+                </Anchors>
+                <NormalFont style="GameFontNormal"/>
+                <HighlightFont style="GameFontHighlight"/>
+                <NormalTexture parentKey="NormalTexture" file="Interface/BUTTONS/WHITE8X8">
+                    <Color r="0.2" g="0.2" b="0.2" a="1"/>
+                </NormalTexture>
+                <HighlightTexture parentKey="HighlightTexture" file="Interface/BUTTONS/WHITE8X8">
+                    <Color r="0.5" g="0.5" b="0.5" a="0.5"/>
+                </HighlightTexture>
+                <PushedTexture parentKey="PushedTexture" file="Interface/BUTTONS/WHITE8X8">
+                    <Color r="0.1" g="0.1" b="0.1" a="0.8"/>
+                </PushedTexture>
+                <Scripts>
+                    <OnClick>
+                        GladiatorBoard.Reset()
+                    </OnClick>
+                </Scripts>
+            </Button>
+
             <!-- Refresh Button -->
             <Button name="$parentRefreshButton" text="">
                 <Size x="120" y="30"/>
@@ -185,6 +209,7 @@
         <Scripts>
             <OnLoad>
                 self:RegisterForDrag("LeftButton")
+                GladiatorBoard.RestorePosition()
             </OnLoad>
             <OnDragStart>
                 self:StartMoving()

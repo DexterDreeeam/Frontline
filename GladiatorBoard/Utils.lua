@@ -1,4 +1,5 @@
 GladiatorBoard = GladiatorBoard or {}
+GladiatorBoardDb = GladiatorBoardDb or {}
 
 function GladiatorBoard.GetActivities()
     for _,catId in pairs(C_LFGList.GetAvailableCategories()) do
@@ -50,6 +51,14 @@ function GladiatorBoard.GetColorByClassEn(classEn)
     end
 end
 
+function GladiatorBoard.TestPrint()
+    local left = GladiatorBoardFrame:GetLeft()
+    local top = GladiatorBoardFrame:GetTop()
+    print("Left:"..left..",Top:"..top)
+    print("Db.Left:"..GladiatorBoardDb.left..",Db.Top:"..GladiatorBoardDb.top)
+    print(GladiatorBoard.CategoryID_Arena, GladiatorBoard.ActivityId_2v2, GladiatorBoard.ActivityId_3v3)
+end
+
 function GladiatorBoard.SavePosition()
     local left = GladiatorBoardFrame:GetLeft()
     local top = GladiatorBoardFrame:GetTop()
@@ -67,6 +76,7 @@ function GladiatorBoard.RestorePosition()
         "BOTTOMLEFT",
         GladiatorBoardDb.left or 400,
         GladiatorBoardDb.top or 1000)
+    GladiatorBoard.SavePosition()
 end
 
 function GladiatorBoard.RestoreFrame()
