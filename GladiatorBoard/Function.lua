@@ -56,6 +56,9 @@ function GladiatorBoard.TruncateRealm(text)
 end
 
 function GladiatorBoard.GetSpecIdFromLocalizedName(member)
+    if member.class == nil or member.spec == nil then
+        return nil
+    end
     local str = strlower(member.class)..strlower(member.spec)
     if GladiatorBoard.specIds ~= nil then
         return GladiatorBoard.specIds[str]

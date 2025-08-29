@@ -92,23 +92,6 @@ function GladiatorBoard.SortGroups()
     end)
 end
 
-function GladiatorBoard.GetSpecIdFromLocalizedName(member)
-    local str = strlower(member.class)..strlower(member.spec)
-    if GladiatorBoard.specIds ~= nil then
-        return GladiatorBoard.specIds[str]
-    end
-    GladiatorBoard.specIds = {}
-    for classId = 1, MAX_CLASSES do
-        local className, classTag, classId = GetClassInfo(classId)
-        local numSpecs = GetNumSpecializationsForClassID(classId)
-        for specIndex = 1, numSpecs do
-            local specId, specName = GetSpecializationInfoForClassID(classId, specIndex)
-            GladiatorBoard.specIds[strlower(className)..strlower(specName)] = specId
-        end
-    end
-    return GladiatorBoard.specIds[str]
-end
-
 function GladiatorBoard.SetRoleIcon(f, member, icon)
     local roleIcon = f:CreateTexture(nil, "ARTWORK", nil, 1)
     roleIcon:SetSize(22, 22)
@@ -119,13 +102,6 @@ function GladiatorBoard.SetRoleIcon(f, member, icon)
         roleIcon:SetTexCoord(0.3046875, 0.6015625, 0.015625, 0.3125)
         return
     end
-
-    -- local specId = GladiatorBoard.GetSpecIdFromLocalizedName(member)
-    -- if specId then
-    --     local iconPath = "Interface\\AddOns\\GladiatorBoard\\media\\Spec_"..specId..".tga"
-    --     roleIcon:SetTexture(iconPath)
-    --     return
-    -- end
 end
 
 function GladiatorBoard.CanGroupApply(group)

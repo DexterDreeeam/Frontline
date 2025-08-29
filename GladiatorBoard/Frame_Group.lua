@@ -179,7 +179,7 @@ function GladiatorBoard.CreateApplicantFrames()
                 GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
                 for _,m in ipairs(appl) do
                     local classSpecStr = m.class .. " - " .. m.specLoc
-                    local activityStr = GladiatorBoard.mode .. " - " .. m.rating
+                    local activityStr = "Rating" .. " - " .. m.rating
                     local itemLevelStr = "PVP Item: " .. m.level
                     local color = GladiatorBoard.GetColorByClassEn(m.classEn)
                     GameTooltip:SetText(m.name, color.r, color.g, color.b, true)

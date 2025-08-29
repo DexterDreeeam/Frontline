@@ -7,6 +7,7 @@
 
 Utils.lua
 Filter.lua
+Function.lua
 Frame_LFG.lua
 Frame_Player.lua
 Frame_Group.lua
